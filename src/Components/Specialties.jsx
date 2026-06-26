@@ -51,7 +51,7 @@ function Specialties() {
 
       button: "View Doctors",
     },
-  };
+  };g
 
   const t = isEnglish ? content.en : content.ar;
 
