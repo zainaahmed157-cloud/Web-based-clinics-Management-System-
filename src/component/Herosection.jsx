@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Users, Stethoscope, ShieldCheck } from 'lucide-react';
+import { Link } from 'react-router-dom';
+
 export default function Herosection() {
 const fullText = "Register now in Medaura and benefit from AI in the medical field. Describe your symptoms to our smart assistant, and let us guide you to the right doctor.";
 const [displayedText, setDisplayedText] = useState("");
@@ -48,12 +50,16 @@ return (
             Find the right specialty, compare top-rated doctors, and schedule your next visit in a fast and simple way.
             </p>        
             <div className="flex flex-row items-center gap-4 w-full">
+                <Link to="/Doctors">
             <button type="button" className="px-8 py-3.5 font-bold active:scale-95 transition text-sm text-white rounded-full bg-[#162f80] hover:bg-[#2a5be1] shadow-sm">
                 Book now
             </button>
-            <button type="button" className="px-6 py-3.5 font-bold active:scale-95 transition text-sm text-[#162f80] rounded-full bg-transparent border-2 border-[#162f80] hover:bg-[#2563eb]/5">
-                Explore specialties
-            </button>
+            </Link>
+        <Link 
+            to="/Specialties" 
+            className="inline-block px-6 py-3.5 font-bold active:scale-95 transition text-sm text-[#162f80] rounded-full bg-transparent border-2 border-[#162f80] hover:bg-[#2563eb]/5 text-center ">
+            Explore specialties
+                </Link>
             </div>
         </div>
         <div className="w-full lg:w-1/2 flex justify-center lg:justify-end z-10">
