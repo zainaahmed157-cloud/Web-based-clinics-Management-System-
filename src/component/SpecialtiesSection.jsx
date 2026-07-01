@@ -24,7 +24,7 @@ const specialtiesData = [
 export default function SpecialtiesPanel() {
 return (
     <div className="min-h-screen  p-4 md:p-10 flex justify-center items-start">
-    <div className="w-full max-w-7xl bg-white p-8 md:p-12 rounded-4xl border border-slate-100 shadow-[0_10px_30px_rgba(0,0,0,0.02)]">
+    <div className="w-full max-w-7xl bg-white p-8 md:p-12 rounded-4xl border border-[#d8e3ff] shadow-[0_10px_30px_rgba(0,0,0,0.02)]">
         <div className="text-center z-10 flex flex-col items-center">
         <h2 className="text-3xl md:text-4xl font-bold text-[#0f1a4f] mb-3 text-center">
             Specialties
