@@ -104,6 +104,25 @@ resources: {
             step3Title: "Book instantly",
             step3Desc:"Reserve your appointment in seconds and receive confirmation right away."
 },
+    aboutPage: {
+            badge: "Medaura",
+            title: "About Us",
+            description1:"At Medaura, we believe that access to healthcare should be simple and fast. We connect patients with the best doctors and clinics, helping them choose the right specialty and book appointments with confidence, without complexity or waiting.",
+            description2:"Our goal is to make the search and booking experience more clear, from comparing reviews and consultation fees to confirming appointments, while maintaining service quality and patient comfort at every step.",
+            feature1: "Trusted Care",
+            feature2: "Faster Booking",
+            feature3: "Certified Doctors"
+},
+    appointmentsPage: {
+            badge: "Appointments",
+            title: "Upcoming appointments & visit history",
+            filter: "Filter by date",
+            apply: "Apply",
+            total: "Total Appointments",
+            today: "Today's Appointments",
+            current: "Currently Showing",
+            empty: "No appointments found for the selected date."
+},
         } },
     ar: { translation: { home: "الرئيسية",
             specialties: "التخصصات",
@@ -202,6 +221,25 @@ resources: {
             step2Desc:"قارن بين التقييمات والأسعار وموقع العيادة قبل اختيار الطبيب.",
             step3Title: "احجز فورًا",
             step3Desc:"احجز موعدك خلال ثوانٍ واحصل على تأكيد الحجز مباشرة."
+},
+    aboutPage: {
+            badge: "ميداورا",
+            title: "من نحن",
+            description1:"في ميداورا نؤمن بأن الوصول إلى الرعاية الصحية يجب أن يكون سهلاً وسريعًا. نربط المرضى بأفضل الأطباء والعيادات، ونساعدهم على اختيار التخصص المناسب وحجز المواعيد بكل سهولة وثقة.",
+            description2:"هدفنا هو جعل تجربة البحث والحجز أكثر وضوحًا وسلاسة، بدايةً من مقارنة تقييمات الأطباء وأسعار الكشف وحتى تأكيد الموعد، مع الحفاظ على جودة الخدمة وراحة المريض في كل خطوة.",
+            feature1: "رعاية موثوقة",
+            feature2: "حجز أسرع",
+            feature3: "أطباء معتمدون"
+},
+    appointmentsPage: {
+            badge: "الحجوزات",
+            title: "المواعيد القادمة وسجل الزيارات",
+            filter: "تصفية بالتاريخ",
+            apply: "تطبيق",
+            total: "إجمالي الحجوزات",
+            today: "حجوزات اليوم",
+            current: "المعروضة الآن",
+            empty: "لا توجد حجوزات مطابقة للتاريخ المحدد."
 },
     } }
 },
