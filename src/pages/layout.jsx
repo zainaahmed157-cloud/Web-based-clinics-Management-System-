@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { Outlet } from 'react-router-dom'
-import Nav from './nav'
-import Footer from './footer'
+import Nav from '../component/nav'
+import Footer from '../component/footer'
 
 export default function Layout() {
   const [isEnglish, setIsEnglish] = useState(false);

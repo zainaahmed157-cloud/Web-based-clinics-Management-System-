@@ -1,18 +1,21 @@
-import { useState } from 'react'
+
+import React from 'react';
+import { useState,useEffect } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from './assets/vite.svg'
 import heroImg from './assets/hero.png'
 import './App.css'
 import Nav from './component/nav'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
-import Layout from './component/layout'
-import Home from './component/Home'
-import Doctors from './component/Doctors'
-import Clinics from './component/Clinics'
-import Appointments from './component/Appointments'
-import About from './component/About'
-import Contact from './component/Contact'
-import Specialties from './component/Specialties'
+import Layout from './pages/layout'
+import Home from './pages/Home'
+import Doctors from './pages/Doctors'
+import Clinics from './pages/Clinics'
+import Appointments from './pages/Appointments'
+import About from './pages/About'
+import Contact from './pages/Contact'
+import Specialties from './pages/Specialties'
+import { useTranslation } from "react-i18next";
 const router =createBrowserRouter([
   {
     path :"/",
@@ -49,7 +52,11 @@ const router =createBrowserRouter([
   }
 ])
 function App() {
-
+    const { i18n } = useTranslation();
+  useEffect(() => {
+    document.documentElement.dir = i18n.dir();
+    document.documentElement.lang = i18n.language;
+}, [i18n.language]);
   return (
       <>
   <RouterProvider router={router} />
