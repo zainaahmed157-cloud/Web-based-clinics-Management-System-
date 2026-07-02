@@ -1,19 +1,23 @@
 import React from 'react';
 import { Search, UserCheck, CalendarDays } from 'lucide-react';
-
+import { useTranslation } from "react-i18next";
 export default function Structure() {
+const { t, i18n } = useTranslation();
+const isEnglish = i18n.language.startsWith("en");
   const steps = [
-    { icon: <Search size={24} />, title: "Search by specialty", desc: "Browse specialties and filter doctors based on your exact medical need." },
-    { icon: <UserCheck size={24} />, title: "Choose your doctor", desc: "Compare ratings, fees, and clinic locations before selecting the doctor." },
-    { icon: <CalendarDays size={24} />, title: "Book instantly", desc: "Reserve your appointment in seconds and receive confirmation right away." }
+    { icon: <Search size={24} />, title: t("structure.step1Title"), desc: t("structure.step1Desc") },
+    { icon: <UserCheck size={24} />, title: t("structure.step2Title"), desc: t("structure.step2Desc") },
+    { icon: <CalendarDays size={24} />, title: t("structure.step3Title"), desc: t("structure.step3Desc") }
   ];
 
   return (
-    <div className="w-full p-4 md:p-10 flex justify-center items-center">
+    <div dir={isEnglish ? "ltr" : "rtl"} className="w-full p-4 md:p-10 flex justify-center items-center">
       <div className="bg-[#f3f7fd] rounded-4xl p-8 md:p-12 lg:mx-14 shadow-sm container">
         <div className="text-center mb-10">
-          <h2 className="text-3xl font-bold text-[#001a6e] mb-2">How it works</h2>
-          <p className="text-slate-500">Three simple steps to find the right doctor and schedule your visit.</p>
+          <h2 className="text-3xl font-bold text-[#001a6e] mb-2">
+      {t("structure.title")}
+          </h2>
+          <p className="text-slate-500">{t("structure.subtitle")}</p>
         </div>
         
         <div className="grid md:grid-cols-3 gap-6">
@@ -22,7 +26,7 @@ export default function Structure() {
               key={index} 
               className="p-8 bg-white border border-slate-100 rounded-3xl shadow-sm hover:shadow-xl transition-all duration-300 ease-out hover:-translate-y-2 hover:scale-[1.02] cursor-pointer"
             >
-              <p className="text-[10px] font-bold text-[#4a6cf7] tracking-widest mb-3">STEP {index + 1}</p>
+              <p className="text-[10px] font-bold text-[#4a6cf7] tracking-widest mb-3">{t("structure.step")} {index + 1}</p>
               <div className="w-12 h-12 flex items-center justify-center bg-[#f0f4ff] text-[#4a6cf7] rounded-xl mb-4">
                 {step.icon}
               </div>

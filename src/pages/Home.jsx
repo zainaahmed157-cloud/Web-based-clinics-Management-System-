@@ -1,7 +1,7 @@
 import React from 'react'
-import Herosection from './Herosection'
-import SpecialtiesSection from './SpecialtiesSection'
-import Structure from './Structure'
+import Herosection from '../component/Herosection'
+import SpecialtiesSection from '../component/SpecialtiesSection'
+import Structure from '../component/Structure'
 
 export default function Home() {
   return (

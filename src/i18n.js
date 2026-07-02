@@ -38,7 +38,7 @@ resources: {
             teamSupport: "Team Support"
             }
             ,
-            specialtiesPage: {
+    specialtiesPage: {
             badge: "Medical Specialties",
             title: "Choose the right specialty",
             subtitle: "Book your appointment with the best doctors in minutes",
@@ -62,7 +62,48 @@ resources: {
             specialtiesCount: "Medical Specialties",
             availableDoctors: "Available Doctors",
             noResults: "No specialties found"
-}
+},
+    hero: {
+            badge: "Trusted healthcare platform",
+            typing:"Register now in Medaura and benefit from AI in the medical field. Describe your symptoms to our smart assistant, and let us guide you to the right doctor.",
+            title1: "Your health starts here",
+            title2: "Book the best doctors in minutes",
+            description:"Find the right specialty, compare top-rated doctors, and schedule your next visit in a fast and simple way.",
+            bookNow: "Book now",
+            explore: "Explore specialties",
+            happyPatients: "Happy patients",
+            licensedDoctors: "Licensed doctors",
+            alwaysAvailable: "Always available"
+},
+    specialtiesPanel: {
+            title: "Specialties",
+            subtitle: "Choose the right specialty and find experienced doctors for your case.",
+            viewAll: "View all",
+            doctors: "doctors",
+            neurology: "Neurology",
+            orthopedics: "Orthopedics",
+            oncology: "Oncology",
+            ent: "ENT",
+            ophthalmology: "Ophthalmology",
+            cardiology: "Cardiology",
+            pulmonology: "Pulmonology",
+            nephrology: "Nephrology",
+            dentistry: "Dentistry",
+            pediatrics: "Pediatrics",
+            dermatology: "Dermatology",
+            gynecology: "Gynecology"
+},
+    structure: {
+            title: "How it works",
+            subtitle: "Three simple steps to find the right doctor and schedule your visit.",
+            step: "STEP",
+            step1Title: "Search by specialty",
+            step1Desc:"Browse specialties and filter doctors based on your exact medical need.",
+            step2Title: "Choose your doctor",
+            step2Desc:"Compare ratings, fees, and clinic locations before selecting the doctor.",
+            step3Title: "Book instantly",
+            step3Desc:"Reserve your appointment in seconds and receive confirmation right away."
+},
         } },
     ar: { translation: { home: "الرئيسية",
             specialties: "التخصصات",
@@ -120,7 +161,48 @@ resources: {
             specialtiesCount: "تخصص طبي",
             availableDoctors: "طبيب متاح",
             noResults: "لا توجد تخصصات مطابقة"
-}
+},
+    hero: {
+            badge: "منصة رعاية صحية موثوقة",
+            typing:"سجل الآن في Medaura واستفد من الذكاء الاصطناعي في المجال الطبي. صف أعراضك لمساعدنا الذكي ودعنا نرشدك إلى الطبيب المناسب.",
+            title1: "صحتك تبدأ من هنا",
+            title2: "احجز أفضل الأطباء في دقائق",
+            description:"ابحث عن التخصص المناسب، وقارن بين أفضل الأطباء، واحجز موعدك بسهولة وسرعة.",
+            bookNow: "احجز الآن",
+            explore: "استكشف التخصصات",
+            happyPatients: "مرضى سعداء",
+            licensedDoctors: "أطباء مرخصون",
+            alwaysAvailable: "متاحون دائمًا"
+},
+    specialtiesPanel: {
+            title: "التخصصات الطبية",
+            subtitle: "اختر التخصص المناسب واعثر على أفضل الأطباء لحالتك.",
+            viewAll: "عرض الكل",
+            doctors: "طبيب",
+            neurology: "مخ وأعصاب",
+            orthopedics: "عظام",
+            oncology: "أورام",
+            ent: "أنف وأذن وحنجرة",
+            ophthalmology: "طب العيون",
+            cardiology: "قلب وأوعية دموية",
+            pulmonology: "صدر وجهاز تنفسي",
+            nephrology: "كلى",
+            dentistry: "أسنان",
+            pediatrics: "أطفال",
+            dermatology: "جلدية",
+            gynecology: "نساء وتوليد"
+},
+    structure: {
+            title: "كيف يعمل الموقع",
+            subtitle: "ثلاث خطوات بسيطة للعثور على الطبيب المناسب وحجز موعدك.",
+            step: "الخطوة",
+            step1Title: "ابحث حسب التخصص",
+            step1Desc:"تصفح التخصصات وابحث عن الطبيب المناسب وفقًا لحالتك الطبية.",
+            step2Title: "اختر طبيبك",
+            step2Desc:"قارن بين التقييمات والأسعار وموقع العيادة قبل اختيار الطبيب.",
+            step3Title: "احجز فورًا",
+            step3Desc:"احجز موعدك خلال ثوانٍ واحصل على تأكيد الحجز مباشرة."
+},
     } }
 },
 detection: {
