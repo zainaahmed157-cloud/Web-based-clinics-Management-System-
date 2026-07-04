@@ -142,7 +142,7 @@ const filteredSpecialties = specialties.filter((item) => {
       className="
 min-h-screen
 bg-[#f7f9ff]
-py-10
+py-24
 px-5
 "
     >

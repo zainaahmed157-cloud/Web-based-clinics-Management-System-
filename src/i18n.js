@@ -123,6 +123,32 @@ resources: {
             current: "Currently Showing",
             empty: "No appointments found for the selected date."
 },
+    testimonials: {
+            title: "What clients say",
+            subtitle: "Real feedback from patients who booked through Medaura.",
+            text1: "Booking was smooth, and I found the right doctor quickly. The clinic experience was excellent.",
+            text2: "I compared doctors by rating and fee in minutes. The appointment confirmation was instant.",
+            text3: "Great platform for family appointments. Clear info, responsive support, and trusted clinics."
+},
+    clinicBest: {
+            title: "Best Clinics",
+            subtitle: "Trusted clinics with high patient satisfaction and modern facilities.",
+            viewAll: "View clinics",
+            viewProfile: "View Profile",
+            location: "Location"
+},
+    doctorsDetails: {
+            title: "Most Booked Doctors",
+            subtitle: "Top doctors with strong ratings and verified clinical experience.",
+            viewAll: "View All Doctors",
+            viewProfile: "View Profile",
+            sessionFee: "Session Fee",
+            experience: "Experience",
+            years: "years",
+            consultantOrthopedics: "Consultant Orthopedics",
+            consultantDentistry: "Consultant Dentistry",
+            consultantCardiology: "Consultant Cardiology"
+}
         } },
     ar: { translation: { home: "الرئيسية",
             specialties: "التخصصات",
@@ -241,6 +267,32 @@ resources: {
             current: "المعروضة الآن",
             empty: "لا توجد حجوزات مطابقة للتاريخ المحدد."
 },
+    testimonials: {
+            title: "آراء المرضى",
+            subtitle: "تجارب حقيقية من المرضى الذين حجزوا عبر Medaura.",
+            text1: "كانت عملية الحجز سهلة جدًا، ووصلت للطبيب المناسب بسرعة. وكانت تجربة العيادة ممتازة.",
+            text2: "قدرت أقارن بين الأطباء من حيث التقييم وسعر الكشف في دقائق، وتم تأكيد الحجز فورًا.",
+            text3: "منصة ممتازة لحجز مواعيد الأسرة، معلومات واضحة، ودعم سريع، وعيادات موثوقة."
+},
+    clinicBest: {
+            title: "أفضل العيادات",
+            subtitle: "عيادات موثوقة بتقييمات عالية وتجهيزات حديثة.",
+            viewAll: "عرض جميع العيادات",
+            viewProfile: "عرض الملف",
+            location: "الموقع"
+},
+    doctorsDetails: {
+            title: "الأطباء الأكثر حجزًا",
+            subtitle: "احجز موعدك مع أكثر الأطباء طلبًا وأعلى تقييمًا.",
+            viewAll: "عرض جميع الأطباء",
+            viewProfile: "عرض الملف الشخصي",
+            sessionFee: "سعر الكشف",
+            experience: "الخبرة",
+            years: "سنة",
+            consultantOrthopedics: "استشاري جراحة العظام",
+            consultantDentistry: "استشاري طب الأسنان",
+            consultantCardiology: "استشاري أمراض القلب"
+}
     } }
 },
 detection: {

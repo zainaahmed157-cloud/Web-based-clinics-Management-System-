@@ -23,18 +23,18 @@ const isEnglish = i18n.language.startsWith("en");
             <p className="text-[#001a6e] font-semibold sm:text-lg mb-2 ">
               {t("aboutPage.badge")}
             </p>
-            <h1 className="text-4xl md:text-5xl font-bold text-2xl mb-2 inline-block text-[#111827] mb-6">
-               {t("aboutPage.title")}
+            <h1 className="text-4xl md:text-5xl font-bold  inline-block text-[#111827] mb-6">
+              {t("aboutPage.title")}
             </h1>
             <p className="text-[#111827] leading-8 mb-6">
-             {t("aboutPage.description1")}
+            {t("aboutPage.description1")}
             </p>
             <p className="text-[#111827] leading-8 mb-8">
               {t("aboutPage.description2")}
             </p>
             <div className="flex flex-wrap justify-center lg:justify-start gap-3">
               <div className="border border-blue-200 rounded-lg px-5 py-2 text-[#001a6e] font-medium bg-[#f7f9ff] ">
-               {t("aboutPage.feature1")}
+              {t("aboutPage.feature1")}
               </div>
 
               <div className="border border-blue-200 rounded-lg px-5 py-2 text-[#001a6e] font-medium bg-[#f7f9ff]">

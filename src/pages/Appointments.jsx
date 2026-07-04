@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 function StatCard({ title, value }) {
   return (
-    <div className="bg-white border border-slate-200 rounded-3xl p-6 shadow-sm min-h-[150px]">
+    <div className="bg-white border border-slate-200 rounded-3xl p-6 shadow-sm min-h-37.5">
       <p className="text-slate-400 text-lg text-right">
         {title}
       </p>
@@ -25,7 +25,7 @@ const isEnglish = i18n.language.startsWith("en");
 
   return (
     <div dir={isEnglish ? "ltr" : "rtl"} className="max-w-7xl mx-auto px-6 py-10 mt-20">
-      <div className="bg-[#f8fafc] border border-slate-200 rounded-[32px] p-8 shadow-sm">
+      <div className="bg-[#f8fafc] border border-slate-200 rounded-4xl p-8 shadow-sm">
         <div className="flex flex-col lg:flex-row justify-between gap-8 mb-8">
           <div>
             <p className="text-slate-400 text-sm mb-1">
@@ -56,7 +56,7 @@ const isEnglish = i18n.language.startsWith("en");
             value="0"
           />
           <StatCard
-           title={t("appointmentsPage.today")}
+          title={t("appointmentsPage.today")}
             value="0"
           />
           <StatCard
@@ -65,10 +65,10 @@ const isEnglish = i18n.language.startsWith("en");
           />
         </div>
       </div>
-      <div className="mt-8 bg-[#ffffff] border border-dashed border-slate-300 rounded-[32px] min-h-[260px] flex items-center justify-center">
+      <div className="mt-8 bg-[#ffffff] border border-dashed border-slate-300 rounded-4xl min-h-65 flex items-center justify-center">
         {appointments.length === 0 && (
           <p className="text-slate-500 text-xl">
-           {t("appointmentsPage.empty")}
+          {t("appointmentsPage.empty")}
           </p>
         )}
       </div>

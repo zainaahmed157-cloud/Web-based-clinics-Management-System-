@@ -9,7 +9,7 @@ export default function Nav() {
     i18n.changeLanguage(i18n.language === "en" ? "ar" : "en");
 };
     const activeLinkStyle = ({ isActive }) =>
-  isActive
+    isActive
     ? "text-[#2563eb] font-bold border-b-2 border-[#2563eb] pb-1 transition-all duration-200"
     : "text-[#0f1a4f] hover:text-[#2563eb] transition-all duration-200";
     const activeMobileLinkStyle = ({ isActive }) =>
@@ -18,7 +18,7 @@ export default function Nav() {
             : "flex items-center justify-between w-full px-4 py-2.5 text-gray-600 hover:bg-[#d9e3ff] rounded-lg transition-all duration-200";
     return (
         
-        <nav className="fixed top-0 left-0 w-full z-[9999] bg-[#edf2ff] border-b border-gray-300 px-6 md:px-16 lg:px-24 xl:px-32 py-4 flex items-center justify-between">
+        <nav className="fixed top-0 left-0 w-full z-9999 bg-[#edf2ff] border-b border-gray-300 px-6 md:px-16 lg:px-24 xl:px-32 py-4 flex items-center justify-between">
             
             <div className='flex items-center gap-3'>
                 <Link to="/" className="block h-10 w-10">
@@ -46,18 +46,18 @@ export default function Nav() {
                 <Link to="/CreateAccount" className="px-6 py-2 rounded-full bg-[#0f1a4f] text-white font-medium hover:bg-[#1a2d75]">{t('createAccount')}</Link>
             </div>
             <div className="sm:hidden flex items-center gap-2">
-  <button
+<button
     onClick={toggleLanguage}
     className="w-10 h-10 flex items-center justify-center rounded-full border border-[#0f1a4f] text-[#0f1a4f] text-xs font-bold"
-  >
+>
     {isEnglish ? "EN" : "ع"}
-  </button>
+</button>
 
-  <button onClick={() => setOpen(!open)} className="p-2">
+<button onClick={() => setOpen(!open)} className="p-2">
     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0f1a4f" strokeWidth="2">
-      <path d="M4 12h16M4 6h16M4 18h16" />
+    <path d="M4 12h16M4 6h16M4 18h16" />
     </svg>
-  </button>
+</button>
 </div>
             {open && (
                 <div className="absolute top-full left-0 w-full bg-[#edf2ff] border-b border-gray-200 flex flex-col p-4 gap-4 sm:hidden shadow-lg">
