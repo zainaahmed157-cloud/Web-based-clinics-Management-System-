@@ -42,7 +42,7 @@ export default function Nav() {
                 >
                 {isEnglish ? "EN" : "ع"}
                 </button>
-                <Link to="/Login" className="px-4 py-2 rounded-full border border-[#0f1a4f] text-[#0f1a4f] font-medium hover:bg-gray-50">{t('login')}</Link>
+                <Link to="/Login" className="px-4 py-2 rounded-full border border-[#0f1a4f] text-[#0f1a4f] font-medium hover:bg-gray-50">{t('login.login')}</Link>
                 <Link to="/CreateAccount" className="px-6 py-2 rounded-full bg-[#0f1a4f] text-white font-medium hover:bg-[#1a2d75]">{t('createAccount')}</Link>
             </div>
             <div className="sm:hidden flex items-center gap-2">

@@ -15,6 +15,8 @@ import Appointments from './pages/Appointments'
 import About from './pages/About'
 import Contact from './pages/Contact'
 import Specialties from './pages/Specialties'
+import Login from './pages/Login'
+import CreateAccount from './pages/CreateAccount'
 import { useTranslation } from "react-i18next";
 const router =createBrowserRouter([
   {
@@ -48,8 +50,17 @@ const router =createBrowserRouter([
     path :"/Contact",
     element : <Contact/>,
     },
-  ]
+  ],
+  
   }
+  ,{
+    path :"/Login",
+    element : <Login/>,
+    },
+    {
+    path :"/CreateAccount",
+    element : <CreateAccount/>,
+    }
 ])
 function App() {
     const { i18n } = useTranslation();
