@@ -17,6 +17,7 @@ import Contact from './pages/Contact'
 import Specialties from './pages/Specialties'
 import Login from './pages/Login'
 import CreateAccount from './pages/CreateAccount'
+import ForgetPassword from './pages/ForgetPassword'
 import { useTranslation } from "react-i18next";
 const router =createBrowserRouter([
   {
@@ -60,6 +61,10 @@ const router =createBrowserRouter([
     {
     path :"/CreateAccount",
     element : <CreateAccount/>,
+    },
+    {
+    path :"/ForgetPassword",
+    element : <ForgetPassword/>,
     }
 ])
 function App() {

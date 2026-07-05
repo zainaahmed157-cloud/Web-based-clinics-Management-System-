@@ -201,6 +201,18 @@ resources: {
             passwordMatch: "Passwords must match",
             confirmPasswordRequired: "Please confirm your password",
             agreeRequired: "You must agree to the terms and conditions"
+},
+    forgetPassword: {
+            login: "Login",
+            signUp: "Sign Up",
+            title: "Forgot Password",
+            subtitle: "Don't worry, we'll send you instructions to reset it.",
+            email: "Email Address",
+            emailPlaceholder: "example@email.com",
+            send: "Send",
+            backToLogin: "Back to Login",
+            invalidEmail: "Please enter a valid email address",
+            emailRequired: "Email is required"
 }
         } },
     ar: { translation: { home: "الرئيسية",
@@ -399,7 +411,18 @@ resources: {
             confirmPasswordRequired: "يرجى تأكيد كلمة المرور",
             agreeRequired: "يجب الموافقة على الشروط والأحكام"
 },
-
+    forgetPassword: {
+            login: "تسجيل الدخول",
+            signUp: "إنشاء حساب",
+            title: "نسيت كلمة المرور",
+            subtitle: "لا تقلق، سنرسل لك تعليمات لإعادة تعيين كلمة المرور.",
+            email: "البريد الإلكتروني",
+            emailPlaceholder: "example@email.com",
+            send: "إرسال",
+            backToLogin: "العودة لتسجيل الدخول",
+            invalidEmail: "يرجى إدخال بريد إلكتروني صحيح",
+            emailRequired: "البريد الإلكتروني مطلوب"
+}
     } }
 },
 detection: {
