@@ -1,0 +1,29 @@
+@import "tailwindcss";
+body {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.swiper-button-next,
+.swiper-button-prev{
+    width:52px;
+    height:52px;
+    border-radius:9999px;
+    background:white;
+    border:1px solid #d8e3ff;
+    color:#163a9a;
+    transition:.3s;
+}
+
+.swiper-button-next:hover,
+.swiper-button-prev:hover{
+    background:#163a9a;
+    color:white;
+}
+
+.swiper-button-next::after,
+.swiper-button-prev::after{
+    font-size:18px;
+    font-weight:bold;
+}

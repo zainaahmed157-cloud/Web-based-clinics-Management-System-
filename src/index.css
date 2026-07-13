@@ -1,0 +1,88 @@
+@import "tailwindcss";
+
+/* =========================================================
+   CSS Custom Properties — Dashboard Design System
+   ========================================================= */
+:root {
+  /* Card & surface */
+  --card-bg: #ffffff;
+  --card-border: #e6eaf0;
+
+  /* Input */
+  --input-bg: #ffffff;
+  --input-border: #d8dee7;
+
+  /* Text */
+  --text-primary: #0f1b3d;
+  --text-secondary: #5e6b85;
+
+  /* States & interactive */
+  --semi-card-bg: #f1f4f9;
+  --hover-bg: #eef2f7;
+  --btn-bg: #e7edf3;
+  --input2-bg: #eef3f8;
+  --text2-bg: #1f6feb;
+  --donut-bg: #e7edf3;
+  --status-hover: #0f1b3d;
+
+  /* Brand */
+  --primary: #1f2b6c;
+  --primary-600: #1b5bd7;
+  --accent-teal: #19a7b5;
+  --accent-amber: #f4b740;
+
+  /* Shadows */
+  --shadow-soft: 0 10px 30px rgba(15, 23, 42, 0.08);
+  --shadow-hover: 0 16px 40px rgba(15, 23, 42, 0.12);
+
+  /* Misc */
+  --invert: invert(0);
+  --background: #ffffff;
+  --foreground: #0f1b3d;
+  --radius: 0.625rem;
+}
+
+/* =========================================================
+   Dark Mode — scoped to dashboard area only
+   ========================================================= */
+[data-theme-dashboard].dark {
+  --background: #0b1224;
+  --foreground: #e6edf7;
+  --card-bg: #121b33;
+  --card-border: #1f2a44;
+  --input-bg: #0f182f;
+  --input-border: #2a3550;
+  --text-primary: #e6edf7;
+  --text-secondary: #a6b0c3;
+  --semi-card-bg: #16213b;
+  --hover-bg: #1a2746;
+  --btn-bg: #111a32;
+  --input2-bg: #111a32;
+  --text2-bg: #6fb2ff;
+  --donut-bg: #1a2440;
+  --status-hover: #d2d9e5;
+  --primary: #4f7ef8;
+  --primary-600: #6490ff;
+  --accent-teal: #2fd4e8;
+  --accent-amber: #ffc53a;
+  --shadow-soft: 0 10px 30px rgba(0, 0, 0, 0.3);
+  --shadow-hover: 0 16px 40px rgba(0, 0, 0, 0.45);
+  --invert: invert(1);
+}
+
+/* =========================================================
+   Base
+   ========================================================= */
+*, *::before, *::after { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--card-border); border-radius: 99px; }
+::-webkit-scrollbar-thumb:hover { background: var(--text-secondary); }
