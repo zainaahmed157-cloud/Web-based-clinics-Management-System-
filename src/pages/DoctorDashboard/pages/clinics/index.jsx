@@ -1,20 +1,31 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Building2, MapPin, Phone } from 'lucide-react';
+import { useAuth } from '../../../../context/AuthContext';
 import axiosInstance from '../../../../api/axiosInstance';
 
 export default function ClinicsPage() {
   const { i18n } = useTranslation();
   const isRtl = i18n.language === 'ar';
+  const { user } = useAuth();
   const [clinics, setClinics] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    axiosInstance.get('/clinics/my-clinics')
-      .then(({ data }) => { if (data.success && Array.isArray(data.data)) setClinics(data.data); })
+    const clinicId = user?.profile?.clinic_id || user?.clinic_id;
+    if (!clinicId) {
+      setLoading(false);
+      return;
+    }
+    axiosInstance.get(`/api/clinic/${clinicId}/profile`)
+      .then(({ data }) => {
+        if (data.status === 'success' && data.clinic) {
+          setClinics([data.clinic]);
+        }
+      })
       .catch(() => {})
       .finally(() => setLoading(false));
-  }, []);
+  }, [user]);
 
   return (
     <div className="space-y-6" dir={isRtl ? 'rtl' : 'ltr'}>

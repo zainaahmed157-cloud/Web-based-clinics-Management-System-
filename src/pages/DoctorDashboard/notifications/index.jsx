@@ -22,9 +22,16 @@ export default function NotificationsPage() {
     if (!isAuthenticated) return;
     try {
       setLoading(true); setError(null);
-      const { data } = await axiosInstance.get('/notifications/me');
-      if (!data.success) throw new Error(data.error || 'Failed to load notifications');
-      const items = Array.isArray(data.data) ? data.data : [];
+      const { data } = await axiosInstance.get('/api/notifications/me');
+      if (data.status !== 'success' && !data.success) throw new Error(data.error || 'Failed to load notifications');
+      const list = data.notifications || data.data || [];
+      const items = Array.isArray(list) ? list.map(item => ({
+        id: item.notification_id || item.id,
+        title: item.title,
+        message: item.message,
+        read: Boolean(item.is_read !== undefined ? item.is_read : item.read),
+        created_at: item.created_at,
+      })) : [];
       items.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
       setNotifications(items);
     } catch (err) {
@@ -64,14 +71,14 @@ export default function NotificationsPage() {
 
   const markRead = useCallback(async (id) => {
     setNotifications((prev) => prev.map((n) => n.id === id ? { ...n, read: true } : n));
-    await axiosInstance.patch(`/notifications/${id}/read`).catch(() => {});
+    await axiosInstance.patch(`/api/notifications/${id}/read`).catch(() => {});
   }, []);
 
   const markAllRead = useCallback(async () => {
     const unread = notifications.filter((n) => !n.read);
     if (!unread.length) return;
     setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
-    await Promise.all(unread.map((n) => axiosInstance.patch(`/notifications/${n.id}/read`).catch(() => {})));
+    await Promise.all(unread.map((n) => axiosInstance.patch(`/api/notifications/${n.id}/read`).catch(() => {})));
   }, [notifications]);
 
   return (

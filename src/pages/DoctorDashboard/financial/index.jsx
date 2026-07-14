@@ -11,15 +11,30 @@ export default function FinancialPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    axiosInstance.get('/financial/doctor-earnings')
-      .then(({ data: d }) => { if (d.success) setData(d.data); })
+    axiosInstance.get('/api/payments/doctor/financials')
+      .then(({ data: d }) => { if (d.status === 'success' || d.success) setData(d); })
       .catch(() => {})
       .finally(() => setLoading(false));
   }, []);
 
-  const totalEarnings = data?.totalEarnings || 0;
-  const monthlyData = data?.monthlyData || [];
-  const transactions = data?.transactions || [];
+  const totalEarnings = data?.summary?.total_earnings || 0;
+  const transactions = (data?.payments || []).map(p => ({
+    patient: p.patient_name,
+    amount: p.amount,
+    date: p.date ? new Date(p.date).toLocaleDateString(isRtl ? 'ar-EG' : 'en-US') : '—',
+    status: 'paid'
+  }));
+
+  const monthlyData = (() => {
+    const monthlyMap = {};
+    (data?.payments || []).forEach(p => {
+      if (!p.date) return;
+      const d = new Date(p.date);
+      const monthName = d.toLocaleString(isRtl ? 'ar-EG' : 'en-US', { month: 'short' });
+      monthlyMap[monthName] = (monthlyMap[monthName] || 0) + (p.amount || 0);
+    });
+    return Object.entries(monthlyMap).map(([month, amount]) => ({ month, amount })).reverse();
+  })();
 
   return (
     <div className="space-y-6" dir={isRtl ? 'rtl' : 'ltr'}>

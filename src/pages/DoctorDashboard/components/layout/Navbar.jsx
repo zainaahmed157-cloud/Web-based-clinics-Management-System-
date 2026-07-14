@@ -34,26 +34,27 @@ export default function Navbar({ onToggleSidebar, dark, setDark }) {
 
   useEffect(() => {
     if (!isAuthenticated) return;
-    axiosInstance.get('/notifications/me')
+    axiosInstance.get('/api/notifications/me')
       .then(({ data }) => {
-        if (data.success && Array.isArray(data.data)) {
-          const mapped = data.data.map((item) => {
+        const notifs = data.notifications || data.data || [];
+        if ((data.status === 'success' || data.success) && Array.isArray(notifs)) {
+          const mapped = notifs.map((item) => {
             let timeStr = '';
             if (item.created_at) {
-              const diffMs = Date.now() - new Date(item.created_at).getTime();
-              const diffMins = Math.floor(diffMs / 60000);
-              const diffHours = Math.floor(diffMins / 60);
-              const diffDays = Math.floor(diffHours / 24);
-              if (diffMins < 60) timeStr = `${Math.max(1, diffMins)}m`;
-              else if (diffHours < 24) timeStr = `${diffHours}h`;
-              else timeStr = `${diffDays}d`;
+               const diffMs = Date.now() - new Date(item.created_at).getTime();
+               const diffMins = Math.floor(diffMs / 60000);
+               const diffHours = Math.floor(diffMins / 60);
+               const diffDays = Math.floor(diffHours / 24);
+               if (diffMins < 60) timeStr = `${Math.max(1, diffMins)}m`;
+               else if (diffHours < 24) timeStr = `${diffHours}h`;
+               else timeStr = `${diffDays}d`;
             }
             return {
-              id: String(item.id),
+              id: String(item.notification_id || item.id),
               title: item.title || t("navbar.notification"),
               body: item.message || '',
               time: timeStr || t("navbar.now"),
-              read: Boolean(item.read),
+              read: Boolean(item.is_read !== undefined ? item.is_read : item.read),
             };
           });
           setNotifications(mapped);
@@ -66,7 +67,7 @@ export default function Navbar({ onToggleSidebar, dark, setDark }) {
     const unread = notifications.filter((n) => !n.read);
     setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
     await Promise.all(
-      unread.map((n) => axiosInstance.patch(`/notifications/${n.id}/read`).catch(() => {}))
+      unread.map((n) => axiosInstance.patch(`/api/notifications/${n.id}/read`).catch(() => {}))
     );
   };
 
@@ -199,7 +200,7 @@ export default function Navbar({ onToggleSidebar, dark, setDark }) {
                         onClick={async () => {
                           setNotifications((prev) => prev.map((x) => x.id === n.id ? { ...x, read: true } : x));
                           setNotifOpen(false);
-                          if (!n.read) await axiosInstance.patch(`/notifications/${n.id}/read`).catch(() => {});
+                          if (!n.read) await axiosInstance.patch(`/api/notifications/${n.id}/read`).catch(() => {});
                         }}
                       >
                         <div className="flex-1 min-w-0">

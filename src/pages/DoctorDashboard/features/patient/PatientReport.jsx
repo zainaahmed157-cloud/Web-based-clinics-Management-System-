@@ -16,9 +16,10 @@ export default function PatientReport({ reports, doctorName }) {
     setFullPrescription(null);
     setFetching(true);
     try {
-      const { data } = await axiosInstance.get('/prescriptions/my-prescriptions');
-      if (data.success && Array.isArray(data.data)) {
-        const found = data.data.find((rx) => String(rx.prescription_id || rx.id) === String(report.id));
+      const { data } = await axiosInstance.get('/api/prescriptions/my-prescriptions');
+      const list = data.prescriptions || data.data || [];
+      if ((data.status === 'success' || data.success) && Array.isArray(list)) {
+        const found = list.find((rx) => String(rx.prescription_id || rx.id) === String(report.id));
         if (found) setFullPrescription(found);
       }
     } catch {}
@@ -53,7 +54,11 @@ export default function PatientReport({ reports, doctorName }) {
           </div>
         )}
         {rows.slice(0, 7).map((clinic) => (
-          <div key={clinic.id} className="flex items-center justify-between p-3 rounded-2xl hover:bg-[var(--hover-bg)] transition-colors" style={{ background: 'var(--semi-card-bg)' }}>
+          <div key={clinic.id} 
+            onClick={() => handleOpenReport(clinic)}
+            className="flex items-center justify-between p-3 rounded-2xl hover:bg-[var(--hover-bg)] transition-colors cursor-pointer" 
+            style={{ background: 'var(--semi-card-bg)' }}
+          >
             <div className="flex items-center gap-3 flex-1 min-w-0">
               <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-blue-100 flex items-center justify-center shrink-0">
                 <Hospital size={18} className="text-blue-600" />
@@ -63,9 +68,9 @@ export default function PatientReport({ reports, doctorName }) {
                 <p className="text-[11px]" style={{ color: 'var(--text-secondary)' }}>{clinic.description || (isRtl ? 'تقرير طبي' : 'Medical Report')}</p>
               </div>
             </div>
-            <button onClick={() => handleOpenReport(clinic)} className="p-2 rounded-lg bg-blue-50 hover:bg-blue-100 transition-colors shrink-0 cursor-pointer">
+            <div className="p-2 rounded-lg bg-blue-50 hover:bg-blue-100 transition-colors shrink-0">
               <Download size={16} strokeWidth={1.5} className="text-blue-600" />
-            </button>
+            </div>
           </div>
         ))}
       </div>

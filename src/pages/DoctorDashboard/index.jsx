@@ -20,9 +20,11 @@ export default function DoctorDashboardHome() {
 
   useEffect(() => {
     let active = true;
-    axiosInstance.get('/doctor-dashboard', { withCredentials: true })
+    axiosInstance.get('/api/doctors/dashboard')
       .then(({ data }) => {
-        if (active && data.success) setDashboardData(data.data);
+        if (active && (data.status === 'success' || data.success)) {
+          setDashboardData(data.dashboard || data.data);
+        }
       })
       .catch((err) => console.error('Failed to load doctor dashboard', err));
     return () => { active = false; };
@@ -99,15 +101,6 @@ export default function DoctorDashboardHome() {
 
           {/* Appointments Table */}
           <div className="grid grid-cols-1 gap-5">
-            <div className="flex justify-between items-center p-4 rounded-2xl shadow-[var(--shadow-soft)] border" style={{ background: 'var(--card-bg)', borderColor: 'var(--card-border)' }}>
-              <h2 className="text-lg font-bold" style={{ color: 'var(--text-primary)' }}>
-                {isRtl ? 'الحجوزات' : 'Bookings'}
-              </h2>
-              <button className="flex items-center gap-2 text-white px-4 py-2 rounded-xl text-sm font-semibold transition-colors hover:opacity-90" style={{ background: '#1F2B6C' }}>
-                <Plus size={16} />
-                {isRtl ? 'حجز جديد' : 'New Booking'}
-              </button>
-            </div>
             <AppointmentsTable appointments={dashboardData?.appointments?.slice(0, 5)} />
           </div>
         </div>

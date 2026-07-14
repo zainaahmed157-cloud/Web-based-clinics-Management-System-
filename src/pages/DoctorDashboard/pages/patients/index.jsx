@@ -22,15 +22,45 @@ export default function PatientsPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    axiosInstance.get('/doctor-dashboard')
-      .then(({ data }) => { if (data.success) setPatients(data.data?.patients || []); })
+    axiosInstance.get('/api/book/my-bookings')
+      .then(({ data }) => {
+        if (data.status === 'success' || data.success) {
+          const list = data.bookings || data.data || [];
+          const uniquePatientsMap = new Map();
+          
+          list.forEach((b) => {
+            const key = b.patient_phone || b.patient_name || String(b.booking_id);
+            if (!key) return;
+
+            const existing = uniquePatientsMap.get(key);
+            if (
+              !existing ||
+              new Date(b.booking_date) > new Date(existing.booking_date)
+            ) {
+              uniquePatientsMap.set(key, b);
+            }
+          });
+
+          const mappedPatients = Array.from(uniquePatientsMap.values()).map((b) => {
+            const dateStr = b.booking_date ? new Date(b.booking_date).toISOString().slice(0, 10) : "—";
+            return {
+              id: String(b.booking_id),
+              name: b.patient_name || "Unknown",
+              phone: b.patient_phone || "—",
+              lastVisit: dateStr,
+            };
+          });
+
+          setPatients(mappedPatients);
+        }
+      })
       .catch(() => { })
       .finally(() => setLoading(false));
   }, []);
 
   const filtered = patients.filter((p) =>
     (p.name || '').toLowerCase().includes(search.toLowerCase()) ||
-    (p.department || '').toLowerCase().includes(search.toLowerCase())
+    (p.phone || '').toLowerCase().includes(search.toLowerCase())
   );
 
   return (
@@ -70,25 +100,25 @@ export default function PatientsPage() {
             </div>
           ) : (
             <div className="overflow-x-auto">
-              <table className="w-full min-w-max text-sm">
+              <table className="w-full min-w-max text-sm text-center">
                 <thead style={{ background: 'var(--hover-bg)', color: 'var(--text-secondary)' }}>
                   <tr>
-                    <th className="px-4 py-3 text-left">#</th>
-                    <th className="px-4 py-3 text-left">{t("patients.name")}</th>
-                    <th className="px-4 py-3 text-left">{t("patients.gender")}</th>
-                    <th className="px-4 py-3 text-left">{t("patients.department")}</th>
-                    <th className="px-4 py-3 text-left">{t("patients.lastVisit")}</th>
+                    <th className="px-4 py-3">#</th>
+                    <th className="px-4 py-3">{t("patients.name")}</th>
+                    <th className="px-4 py-3">{isEnglish ? "Patient ID" : "رقم المريض"}</th>
+                    <th className="px-4 py-3">{isEnglish ? "Phone" : "الهاتف"}</th>
+                    <th className="px-4 py-3">{t("patients.lastVisit")}</th>
                   </tr>
                 </thead>
                 <tbody>
                   {filtered.map((p, i) => (
                     <tr key={i} className="border-t cursor-pointer hover:bg-[var(--hover-bg)] transition" style={{ borderColor: 'var(--card-border)' }}
-                      onClick={() => navigate(`/doctor-dashboard/patients/${i + 1}`)}>
+                      onClick={() => navigate(`/doctor-dashboard/patients/${p.id}`)}>
                       <td className="px-4 py-3" style={{ color: 'var(--text-secondary)' }}>{i + 1}</td>
-                      <td className="px-4 py-3 font-medium" style={{ color: 'var(--text-primary)' }}>{p.name}</td>
-                      <td className="px-4 py-3" style={{ color: 'var(--text-secondary)' }}>{p.gender}</td>
-                      <td className="px-4 py-3"><span className={`px-2.5 py-1 rounded-full text-xs font-medium ${getDeptColor(p.department)}`}>{p.department}</span></td>
-                      <td className="px-4 py-3" style={{ color: 'var(--text-secondary)' }}>{p.date}</td>
+                      <td className="px-4 py-3 font-medium text-[#1f2b6c] hover:underline" style={{ color: 'var(--text-primary)' }}>{p.name}</td>
+                      <td className="px-4 py-3" style={{ color: 'var(--text-secondary)' }}>{p.id}</td>
+                      <td className="px-4 py-3" style={{ color: 'var(--text-secondary)' }}>{p.phone}</td>
+                      <td className="px-4 py-3" style={{ color: 'var(--text-secondary)' }}>{p.lastVisit}</td>
                     </tr>
                   ))}
                 </tbody>
