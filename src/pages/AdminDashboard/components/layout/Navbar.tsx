@@ -20,6 +20,38 @@ import type { Notification } from "@/lib/types/api";
 import { fetchNotificationsClient } from "@/lib/utils/fetchNotifications";
 import { useLocale } from "@/lib/hooks";
 import { t } from "@/i18n";
+import axiosInstance from "@/api/axiosInstance";
+
+const getNotificationAvatarLetter = (title: string, message: string) => {
+  const match = message?.match(/"([^"]+)"/);
+  if (match && match[1]) {
+    return match[1].charAt(0).toUpperCase();
+  }
+  return title?.[0]?.toUpperCase() || "N";
+};
+
+const NotificationAvatar = ({ notification, size = "w-9 h-9", textSize = "text-sm" }: { notification: any, size?: string, textSize?: string }) => {
+  const [error, setError] = useState(false);
+  const photo = notification.photo || notification.image || notification.avatar;
+  const isValid = photo && typeof photo === "string" && photo !== "[object Object]" && photo !== "undefined" && photo !== "null" && !error;
+
+  if (isValid) {
+    return (
+      <img
+        src={photo}
+        alt={notification.title}
+        onError={() => setError(true)}
+        className={`${size} rounded-full object-cover`}
+      />
+    );
+  }
+
+  return (
+    <div className={`${size} rounded-full bg-[#e7edf3] flex items-center justify-center ${textSize} font-semibold text-[#1f6feb]`}>
+      {getNotificationAvatarLetter(notification.title, notification.message)}
+    </div>
+  );
+};
 
 function Navbar({ onToggleSidebar }: { onToggleSidebar: () => void }) {
   const { logout, user, isAuthenticated } = useAuth();
@@ -131,10 +163,7 @@ function Navbar({ onToggleSidebar }: { onToggleSidebar: () => void }) {
       prev.map((n) => (n.id === notificationId ? { ...n, read: true } : n))
     );
     try {
-      await fetch(`/api/notifications/${notificationId}/read`, {
-        method: "PATCH",
-        credentials: "include",
-      });
+      await axiosInstance.patch(`/api/notifications/${notificationId}/read`);
     } catch {
       /* best-effort */
     }
@@ -145,12 +174,7 @@ function Navbar({ onToggleSidebar }: { onToggleSidebar: () => void }) {
     if (!unread.length) return;
     setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
     await Promise.all(
-      unread.map((n) =>
-        fetch(`/api/notifications/${n.id}/read`, {
-          method: "PATCH",
-          credentials: "include",
-        })
-      )
+      unread.map((n) => axiosInstance.patch(`/api/notifications/${n.id}/read`))
     );
   }, [notifications]);
 
@@ -365,9 +389,7 @@ function Navbar({ onToggleSidebar }: { onToggleSidebar: () => void }) {
                         }`}
                       >
                         <div className="relative flex-shrink-0">
-                          <div className="w-9 h-9 rounded-full bg-[#e7edf3] flex items-center justify-center text-sm font-semibold text-[#1f6feb]">
-                            {n.title?.[0] || "N"}
-                          </div>
+                          <NotificationAvatar notification={n} />
                           {!n.read && (
                             <span className="absolute top-0 right-0 w-2 h-2 bg-[#1f6feb] rounded-full ring-2 ring-white" />
                           )}

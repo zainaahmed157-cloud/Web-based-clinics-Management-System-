@@ -1,14 +1,15 @@
 
 
-import StatsCard from "./components/ui/StatsCard";
 import DashboardHeader from "./dashboardHeader/DashboardHeader";
-import ChartBar from "./components/charts/ChartBar";
 import AppointsmentRequests from "./features/appointments/AppointsmentRequests";
 import VisitsGauge from "./components/charts/VisitsGauge";
 import DoctorsList from "./features/doctors/doctorsList";
 import DepartmentsChart from "./components/charts/DepartmentsChart";
 import PatientsTable from "./features/clinics/PatientsTable";
 import AppointmentsTable from "./features/appointments/AppointmentsTable";
+import AnalyticsLineChart from "./components/charts/AnalyticsLineChart";
+import MiniStatsCard from "./components/ui/MiniStatsCard";
+import CalendarWidget from "./components/ui/CalendarWidget";
 import { useLocale } from "@/lib/hooks";
 import { t } from "@/i18n";
 
@@ -16,12 +17,9 @@ import React, { useState, useEffect } from "react";
 import {
   Stethoscope,
   Users,
-  Calendar,
   User,
-  FileText,
-  Activity,
-  Wallet,
   ShieldCheck,
+  CalendarDays,
 } from "lucide-react";
 
 function Dashboard({ childern }: { childern: React.ReactNode }) {
@@ -41,7 +39,6 @@ function Dashboard({ childern }: { childern: React.ReactNode }) {
         if (result?.success || result?.status === "success") {
           setDashboardData(result.data);
         }
-        console.log("Dashboard Data:", result.data);
       } catch (error) {
         console.error("Failed to fetch admin dashboard data:", error);
       } finally {
@@ -75,88 +72,66 @@ function Dashboard({ childern }: { childern: React.ReactNode }) {
         <div className="p-6">
           <DashboardHeader range={range} setRange={setRange} />
 
-          {/* Stats */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6 mb-6">
-            <StatsCard
-              title={t("adminDash.totalDoctors", locale)}
-              value={stats?.totalDoctors ?? 0}
-              percentage={18}
-              icon={
-                <Stethoscope size={20} strokeWidth={2} className="text-white" />
-              }
-              iconBg="bg-[#6A1B9A]"
-              chartColor="#6A1B9A"
-              data={[
-                { value: 10 },
-                { value: 20 },
-                { value: 15 },
-                { value: 25 },
-                { value: 22 },
-              ]}
-            />
-
-            <StatsCard
-              title={t("adminDash.totalPatients", locale)}
-              value={stats?.totalPatients ?? 0}
-              percentage={20}
-              icon={<User size={20} strokeWidth={2} className="text-white" />}
-              iconBg="bg-[#1F6DB2]"
-              chartColor="#1F6DB2"
-              data={[
-                { value: 5 },
-                { value: 8 },
-                { value: 6 },
-                { value: 10 },
-                { value: 9 },
-              ]}
-            />
-
-            <StatsCard
-              title={t("adminDash.totalStaff", locale)}
-              value={stats?.totalStaff ?? 0}
-              percentage={5}
-              icon={
-                <ShieldCheck size={20} strokeWidth={2} className="text-white" />
-              }
-              iconBg="bg-[#00796B]"
-              chartColor="#00796B"
-              data={[
-                { value: 4 },
-                { value: 5 },
-                { value: 4 },
-                { value: 6 },
-                { value: 5 },
-              ]}
-            />
+          {/* Top Row: Main Analytics + Mini Stats */}
+          <div className="grid grid-cols-1 xl:grid-cols-12 gap-6 mb-6">
+            <div className="xl:col-span-8">
+              <AnalyticsLineChart data={filteredData} />
+            </div>
+            <div className="xl:col-span-4 flex flex-col gap-4">
+              <MiniStatsCard
+                title={t("adminDash.totalDoctors", locale)}
+                value={stats?.totalDoctors ?? 0}
+                percentage={18}
+                icon={<Stethoscope size={24} className="text-[#6A1B9A]" />}
+                iconBg="bg-[#F3E8F9]"
+              />
+              <MiniStatsCard
+                title={t("adminDash.totalPatients", locale)}
+                value={stats?.totalPatients ?? 0}
+                percentage={20}
+                icon={<User size={24} className="text-[#1F6DB2]" />}
+                iconBg="bg-[#E7F0F8]"
+              />
+              <MiniStatsCard
+                title={t("adminDash.totalStaff", locale)}
+                value={stats?.totalStaff ?? 0}
+                percentage={5}
+                icon={<ShieldCheck size={24} className="text-[#00796B]" />}
+                iconBg="bg-[#E0F2F1]"
+              />
+              <MiniStatsCard
+                title="مواعيد اليوم"
+                value={124}
+                percentage={-2}
+                icon={<CalendarDays size={24} className="text-[#EB642F]" />}
+                iconBg="bg-[#FDECE5]"
+              />
+            </div>
           </div>
 
-          {/* Charts + Requests */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+          {/* Middle Row: Donut Chart, Gauge, Calendar */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
             <div className="lg:col-span-1">
-              <ChartBar data={filteredData} />
+              <VisitsGauge male={69} female={56} total={80} />
             </div>
-
-            <AppointsmentRequests requests={dashboardData?.pendingRequests} />
-          </div>
-
-          {/* Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-            <VisitsGauge male={69} female={56} total={80} />
-            <DoctorsList doctors={dashboardData?.doctors} />
-          </div>
-
-          {/* Table + Pie */}
-          <div className="grid grid-cols-1 xl:grid-cols-3 gap-6 mb-8">
-            <div className="lg:col-span-2">
-              <PatientsTable patients={dashboardData?.patients} />
-            </div>
-
             <div className="lg:col-span-1">
               <DepartmentsChart />
             </div>
+            <div className="lg:col-span-1">
+              <CalendarWidget />
+            </div>
           </div>
 
-          {/* Appointments */}
+          {/* Bottom Row: Lists and Tables */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+            <AppointsmentRequests requests={dashboardData?.pendingRequests} />
+            <DoctorsList doctors={dashboardData?.doctors} />
+          </div>
+
+          <div className="grid grid-cols-1 gap-6 mb-6">
+            <PatientsTable patients={dashboardData?.patients} />
+          </div>
+
           <div className="grid grid-cols-1 gap-6 mb-8">
             <AppointmentsTable appointments={dashboardData?.recentBookings} />
           </div>

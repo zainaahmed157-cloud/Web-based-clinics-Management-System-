@@ -91,11 +91,11 @@ export default function DepartmentsChart() {
   };
 
   return (
-    <div className='bg-(--card-bg) rounded-2xl shadow-lg border border-(--card-border) overflow-hidden'>
+    <div className='bg-(--card-bg) h-full rounded-2xl shadow-[var(--shadow-soft)] border border-(--card-border) overflow-hidden flex flex-col'>
 
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b-2 border-(--card-border) mb-6 p-6">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-(--card-border) mb-6 p-6">
         
-        <button className="w-full sm:w-auto border-2 border-(--card-border) px-3 py-2 rounded-[5px] text-sm text-(--text-primary) font-normal cursor-pointer hover:text-white hover:bg-[#1F2B6C] transition-colors duration-500">
+        <button className="w-full sm:w-auto border border-(--card-border) px-4 py-2 rounded-lg text-sm text-(--text-primary) font-semibold cursor-pointer hover:text-white hover:bg-[#1F2B6C] transition-colors duration-300">
           عرض الكل
         </button>
 
@@ -138,30 +138,6 @@ export default function DepartmentsChart() {
               <div className='text-sm text-(--text-secondary) mt-1'>إجمالي الأقسام: {data.length}</div>
             </div>
           </div>
-        </div>
-      </div>
-
-      <div className="bg-(--card-bg) rounded-2xl p-6">
-        <div className="grid grid-cols-1 gap-4 divide-y divide-(--card-border) shadow-sm border border-(--card-border) rounded-xl p-4 sm:grid-cols-2 sm:divide-y-0 sm:divide-x">
-
-          <div className="text-center px-4">
-            <p className="text-xl font-bold text-(--text-primary)">
-              2512.32 دولار
-            </p>
-            <p className="text-sm text-(--text-secondary) mt-1">
-              الإيرادات
-            </p>
-          </div>
-
-          <div className="text-center px-4">
-            <p className="text-xl font-bold text-(--text-primary)">
-              3125+
-            </p>
-            <p className="text-sm text-(--text-secondary) mt-1">
-              المواعيد في الشهر الماضي
-            </p>
-          </div>
-
         </div>
       </div>
     </div>

@@ -268,6 +268,16 @@ export default function AdminSettingsPage() {
         confirmButtonText: "ممتاز",
       });
 
+      // Try to create a notification for this action
+      try {
+        await axiosInstance.post("/api/notifications", {
+          title: "إضافة مدير جديد",
+          message: `تم إنشاء حساب مدير جديد باسم "${newAdminName.trim()}" بنجاح`,
+        });
+      } catch (notificationErr) {
+        // Silently ignore notification creation errors if the backend doesn't support it yet
+      }
+
       // Reset form fields
       setNewAdminName("");
       setNewAdminEmail("");

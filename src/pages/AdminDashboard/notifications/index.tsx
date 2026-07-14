@@ -10,6 +10,37 @@ import axiosInstance from "@/api/axiosInstance";
 
 const PAGE_SIZE = 10;
 
+const getNotificationAvatarLetter = (title: string, message: string) => {
+  const match = message?.match(/"([^"]+)"/);
+  if (match && match[1]) {
+    return match[1].charAt(0).toUpperCase();
+  }
+  return title?.[0]?.toUpperCase() || "N";
+};
+
+const NotificationAvatar = ({ notification, size = "w-11 h-11", textSize = "text-lg" }: { notification: any, size?: string, textSize?: string }) => {
+  const [error, setError] = useState(false);
+  const photo = notification.photo || notification.image || notification.avatar;
+  const isValid = photo && typeof photo === "string" && photo !== "[object Object]" && photo !== "undefined" && photo !== "null" && !error;
+
+  if (isValid) {
+    return (
+      <img
+        src={photo}
+        alt={notification.title}
+        onError={() => setError(true)}
+        className={`${size} rounded-full object-cover`}
+      />
+    );
+  }
+
+  return (
+    <div className={`${size} rounded-full bg-[#e7edf3] flex items-center justify-center ${textSize} font-semibold text-[#1f6feb]`}>
+      {getNotificationAvatarLetter(notification.title, notification.message)}
+    </div>
+  );
+};
+
 export default function AdminNotificationsPage() {
   const { isAuthenticated } = useAuth();
   const [notifications, setNotifications] = useState<Notification[]>([]);
@@ -190,9 +221,7 @@ export default function AdminNotificationsPage() {
               }`}
             >
               <div className="relative flex-shrink-0">
-                <div className="w-11 h-11 rounded-full bg-[#e7edf3] flex items-center justify-center text-lg font-semibold text-[#1f6feb]">
-                  {notification.title?.[0] || "N"}
-                </div>
+                <NotificationAvatar notification={notification} />
                 {!notification.read && (
                   <span className="absolute top-0 right-0 w-3 h-3 bg-indigo-500 rounded-full ring-2 ring-white dark:ring-slate-900" />
                 )}

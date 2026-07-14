@@ -26,16 +26,16 @@ export default function VisitsGauge({ male, female, total }: Props) {
   const femaleUnfilled = Math.round(innerCircumference - femaleFilled);
 
   return (
-    <div className="bg-(--card-bg) border border-(--card-border) h-fit rounded-xl shadow-md overflow-hidden">
+    <div className="bg-(--card-bg) border border-(--card-border) h-full rounded-2xl shadow-[var(--shadow-soft)] overflow-hidden flex flex-col">
 
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b-2 border-(--card-border) mb-6 p-6">
         
-        <button className="w-full sm:w-auto border-2 border-(--card-border) px-3 py-2 rounded-[5px] text-sm text-(--text-primary) font-normal cursor-pointer hover:text-white hover:bg-[#1F2B6C] transition-colors duration-500">
+        <button className="w-full sm:w-auto border border-(--card-border) px-4 py-2 rounded-lg text-sm text-(--text-primary) font-semibold cursor-pointer hover:text-white hover:bg-[#1F2B6C] transition-colors duration-300">
           عرض الكل
         </button>
 
         <h3 className="text-2xl font-bold text-(--text-primary)">
-          زيارات المرضى
+          زيارات المرضى (نسبة)
         </h3>
       </div>
 
@@ -123,62 +123,6 @@ export default function VisitsGauge({ male, female, total }: Props) {
             </text>
           </svg>
         </div>
-      </div>
-
-      <div className="flex flex-col gap-3 p-6">
-
-        {/* male */}
-        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-          <h3 className="text-2xl font-bold text-(--text-primary)">
-            {male}%
-          </h3>
-
-          <div className="flex flex-col sm:flex-row gap-2 items-start sm:items-center">
-            <div className="text-right">
-              <p className="font-semibold text-(--text-primary)">
-                ذكر
-              </p>
-
-              <div className="flex items-center gap-2 font-medium">
-                <p className="text-sm text-(--text-secondary)">
-                  منذ الأسبوع الماضي
-                </p>
-                <span className="text-emerald-600">-15%</span>
-              </div>
-            </div>
-
-            <div className="w-10 h-10 rounded-full bg-[#1F6DB2] flex items-center justify-center">
-              <Mars size={23} strokeWidth={2} className="text-white" />
-            </div>
-          </div>
-        </div>
-
-        {/* female */}
-        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-          <h3 className="text-2xl font-bold text-(--text-primary)">
-            {female}%
-          </h3>
-
-          <div className="flex flex-col sm:flex-row gap-2 items-start sm:items-center">
-            <div className="text-right">
-              <p className="font-semibold text-(--text-primary)">
-                أنثى
-              </p>
-
-              <div className="flex items-center gap-2 font-medium">
-                <p className="text-sm text-(--text-secondary)">
-                  منذ الأسبوع الماضي
-                </p>
-                <span className="text-emerald-600">-15%</span>
-              </div>
-            </div>
-
-            <div className="w-10 h-10 rounded-full bg-[#6A1B9A] flex items-center justify-center">
-              <Venus size={23} strokeWidth={2} className="text-white" />
-            </div>
-          </div>
-        </div>
-
       </div>
     </div>
   );
