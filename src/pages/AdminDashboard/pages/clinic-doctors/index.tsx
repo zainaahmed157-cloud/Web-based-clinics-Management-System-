@@ -1,6 +1,7 @@
 
 
 import { useEffect, useState, useMemo } from "react";
+import axiosInstance from "../../../../api/axiosInstance";
 import {
   Search,
   Hospital,
@@ -92,12 +93,11 @@ export default function ClinicDoctorsPage() {
     if (!userId) return;
     setPendingAction((prev) => ({ ...prev, [userId]: true }));
     try {
-      const url = activate
-        ? `/api/admin/users/${userId}/undelete`
-        : `/api/admin/users/${userId}/delete`;
-      const method = activate ? "PATCH" : "DELETE";
-      const res = await fetch(url, { method, credentials: "include" });
-      if (!res.ok) throw new Error("فشل تنفيذ العملية");
+      if (activate) {
+        await axiosInstance.patch(`/api/admin/users/${userId}/undelete`);
+      } else {
+        await axiosInstance.delete(`/api/admin/users/${userId}/delete`);
+      }
       setStaff((prev) =>
         prev.map((s) =>
           s.user_id === userId ? { ...s, is_active: activate } : s
@@ -118,10 +118,7 @@ export default function ClinicDoctorsPage() {
     setLoading(true);
     setError(null);
     try {
-      const response = await fetch("/api/admin/staff", {
-        credentials: "include",
-      });
-      const result = await response.json();
+      const { data: result } = await axiosInstance.get("/api/admin/staff");
 
       const isSuccess = result.success === true || result.status === "success";
       const staffList = result.data || result.staff || [];

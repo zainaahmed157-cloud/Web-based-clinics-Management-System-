@@ -1,6 +1,7 @@
 
 
 import { useCallback, useEffect, useMemo, useState } from "react";
+import axiosInstance from "../../../../api/axiosInstance";
 // 
 import {
   CalendarClock,
@@ -119,12 +120,11 @@ export default function PatientsPage() {
       if (!uid) return;
       setPendingAction((prev) => ({ ...prev, [uid]: true }));
       try {
-        const url = activate
-          ? `/api/admin/users/${uid}/undelete`
-          : `/api/admin/users/${uid}/delete`;
-        const method = activate ? "PATCH" : "DELETE";
-        const res = await fetch(url, { method, credentials: "include" });
-        if (!res.ok) throw new Error("فشل تنفيذ العملية");
+        if (activate) {
+          await axiosInstance.patch(`/api/admin/users/${uid}/undelete`);
+        } else {
+          await axiosInstance.delete(`/api/admin/users/${uid}/delete`);
+        }
         // Optimistic update
         setPatients((prev) =>
           prev.map((p) =>
@@ -144,11 +144,7 @@ export default function PatientsPage() {
     setLoading(true);
     setError(null);
     try {
-      const response = await fetch("/api/admin/patients", { credentials: "include" });
-      const payload = (await response.json()) as PatientsApiResponse;
-      if (!response.ok || payload.success === false || payload.status === "fail") {
-        throw new Error(payload.error || payload.message || "فشل تحميل بيانات المرضى.");
-      }
+      const { data: payload } = await axiosInstance.get<PatientsApiResponse>("/api/admin/patients");
       setPatients(unwrapPatients(payload));
     } catch (err) {
       setPatients([]);

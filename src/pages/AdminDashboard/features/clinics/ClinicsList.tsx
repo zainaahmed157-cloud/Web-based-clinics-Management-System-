@@ -3,6 +3,7 @@
 import { Hospital, Check, X } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
+import axiosInstance from "../../../../api/axiosInstance";
 
 interface Clinic {
   id?: number;
@@ -136,13 +137,9 @@ export default function ClinicsList({
 
     async function loadAllClinics() {
       try {
-        const [allRes] = await Promise.all([
-          fetch("/api/admin/clinics", { credentials: "include" }),
-        ]);
+        const { data: allPayload } = await axiosInstance.get("/api/admin/clinics");
 
-        const allPayload = await allRes.json();
-
-        if (!allRes.ok || !allPayload.success) {
+        if (!allPayload.success) {
           return;
         }
 
@@ -187,18 +184,7 @@ export default function ClinicsList({
       const action = approve ? "approve" : "reject";
       const endpoint = `/api/admin/clinics?clinic_id=${id}&action=${action}`;
 
-      const response = await fetch(endpoint, {
-        method: "PATCH",
-        credentials: "include",
-      });
-
-      const result = await readApiResult(response);
-
-      if (!response.ok || result.success === false) {
-        throw new Error(
-          result.error || result.message || "Failed to update clinic status",
-        );
-      }
+      await axiosInstance.patch(endpoint);
 
       setClinics((prev) =>
         prev.map((item) =>

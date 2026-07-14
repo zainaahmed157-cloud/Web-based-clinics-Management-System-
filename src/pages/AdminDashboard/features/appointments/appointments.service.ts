@@ -1,3 +1,5 @@
+import axiosInstance from "../../../../api/axiosInstance";
+
 export type Appointment = {
   id: string;
   name: string;
@@ -13,13 +15,13 @@ export type ApiListResult = {
 };
 
 export async function fetchAppointmentsServer(url = '/api/appointments', page = 1, limit = 10): Promise<ApiListResult> {
-  const q = new URL(url, 'http://localhost');
-  q.searchParams.set('page', String(page));
-  q.searchParams.set('limit', String(limit));
-  const res = await fetch(q.toString(), { cache: 'no-store' });
-  if (!res.ok) throw new Error(`Failed to fetch appointments: ${res.status}`);
-  const items = await res.json();
-  const totalHeader = res.headers.get('X-Total-Count');
-  const total = totalHeader ? parseInt(totalHeader, 10) : Array.isArray(items) ? items.length : 0;
+  const params = new URLSearchParams();
+  params.set('page', String(page));
+  params.set('limit', String(limit));
+  const fullUrl = `${url}?${params.toString()}`;
+  const { data, headers } = await axiosInstance.get(fullUrl);
+  const totalHeader = headers['x-total-count'] as string | undefined;
+  const items = Array.isArray(data) ? data : [];
+  const total = totalHeader ? parseInt(totalHeader, 10) : items.length;
   return { items, total };
 }

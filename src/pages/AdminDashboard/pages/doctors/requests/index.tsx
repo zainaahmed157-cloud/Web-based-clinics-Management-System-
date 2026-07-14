@@ -1,6 +1,7 @@
 
 
 import { useCallback, useEffect, useMemo, useState } from "react";
+import axiosInstance from "../../../../../api/axiosInstance";
 import {
   BadgeCheck,
   CalendarDays,
@@ -215,22 +216,7 @@ export default function DoctorRequestsPage() {
     setError(null);
 
     try {
-      const response = await fetch("/api/admin/doctors", {
-        method: "GET",
-        credentials: "include",
-      });
-      const payload = (await response.json()) as DoctorsApiResponse;
-
-      if (
-        !response.ok ||
-        payload.success === false ||
-        payload.status === "fail"
-      ) {
-        throw new Error(
-          payload.error || payload.message || "فشل تحميل بيانات الأطباء",
-        );
-      }
-
+      const { data: payload } = await axiosInstance.get<DoctorsApiResponse>("/api/admin/doctors");
       setDoctors(unwrapDoctors(payload));
     } catch (err) {
       setDoctors([]);
@@ -306,21 +292,7 @@ export default function DoctorRequestsPage() {
       );
 
       try {
-        const response = await fetch(`/api/admin/${id}/verify`, {
-          method: "PATCH",
-          credentials: "include",
-        });
-        const payload = (await response.json()) as DoctorsApiResponse;
-
-        if (
-          !response.ok ||
-          payload.success === false ||
-          payload.status === "fail"
-        ) {
-          throw new Error(
-            payload.error || payload.message || "فشل توثيق الطبيب",
-          );
-        }
+        await axiosInstance.patch(`/api/admin/${id}/verify`);
       } catch (err) {
         setDoctors(previousDoctors);
         setError(getErrorMessage(err));
@@ -341,21 +313,7 @@ export default function DoctorRequestsPage() {
       );
 
       try {
-        const response = await fetch(`/api/admin/${id}/unverify`, {
-          method: "PATCH",
-          credentials: "include",
-        });
-        const payload = (await response.json()) as DoctorsApiResponse;
-
-        if (
-          !response.ok ||
-          payload.success === false ||
-          payload.status === "fail"
-        ) {
-          throw new Error(
-            payload.error || payload.message || "فشل إلغاء توثيق الطبيب",
-          );
-        }
+        await axiosInstance.patch(`/api/admin/${id}/unverify`);
       } catch (err) {
         setDoctors(previousDoctors);
         setError(getErrorMessage(err));

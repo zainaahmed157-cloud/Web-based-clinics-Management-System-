@@ -12,6 +12,7 @@ import MiniStatsCard from "./components/ui/MiniStatsCard";
 import CalendarWidget from "./components/ui/CalendarWidget";
 import { useLocale } from "@/lib/hooks";
 import { t } from "@/i18n";
+import axiosInstance from "../../api/axiosInstance";
 
 import React, { useState, useEffect } from "react";
 import {
@@ -32,10 +33,7 @@ function Dashboard({ childern }: { childern: React.ReactNode }) {
   useEffect(() => {
     async function fetchDashboardData() {
       try {
-        const response = await fetch("/api/admin/admin-stats", {
-          credentials: "include",
-        });
-        const result = await response.json();
+        const { data: result } = await axiosInstance.get("/api/admin/admin-stats");
         if (result?.success || result?.status === "success") {
           setDashboardData(result.data);
         }

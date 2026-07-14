@@ -1,6 +1,7 @@
 
 
 import React, { useEffect, useState } from "react";
+import axiosInstance from "../../../../api/axiosInstance";
 import { MoreVertical , ChevronRight , ChevronLeft } from "lucide-react";
 
 type Appointment = {
@@ -150,10 +151,7 @@ export default function Appointments() {
   const loadAppointments = async () => {
     setLoading(true);
     try {
-      const res = await fetch("/api/admin/bookings", {
-        credentials: "include",
-      });
-      const result = await res.json();
+      const { data: result } = await axiosInstance.get("/api/admin/bookings");
       if (result.success && Array.isArray(result.data)) {
         setAppointments(result.data.map(normalizeAppointment));
       }

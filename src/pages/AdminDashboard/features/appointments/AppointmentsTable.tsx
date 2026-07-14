@@ -3,6 +3,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { MoreVertical, ChevronRight, ChevronLeft } from "lucide-react";
 import { useNavigate, useLocation } from "react-router-dom";
+import axiosInstance from "../../../../api/axiosInstance";
 
 type Appointment = {
   id: string;
@@ -40,18 +41,13 @@ export async function fetchAppointmentsFromApi(
   page = 1,
   limit = 10,
 ): Promise<ApiListResult> {
-  const q = new URL(
-    url,
-    typeof window !== "undefined" ? window.location.origin : "http://localhost",
-  );
-  q.searchParams.set("page", String(page));
-  q.searchParams.set("limit", String(limit));
+  const params = new URLSearchParams();
+  params.set("page", String(page));
+  params.set("limit", String(limit));
+  const fullUrl = `${url}?${params.toString()}`;
 
-  const res = await fetch(q.toString());
-  if (!res.ok) throw new Error(`Failed to fetch appointments: ${res.status}`);
-
-  const result = await res.json();
-  const totalHeader = res.headers.get("X-Total-Count");
+  const { data: result, headers } = await axiosInstance.get(fullUrl);
+  const totalHeader = headers["x-total-count"] as string | undefined;
   const rawItems = Array.isArray(result)
     ? result
     : Array.isArray(result?.bookings)

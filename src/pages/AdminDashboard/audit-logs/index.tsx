@@ -27,6 +27,7 @@ import {
   XCircle,
 } from "lucide-react";
 import type { AuditLog, AuditStats } from "@/lib/types/api";
+import axiosInstance from "../../../api/axiosInstance";
 
 const PAGE_SIZE = 15;
 
@@ -260,20 +261,16 @@ export default function AuditLogsPage() {
 
       try {
         const [statsRes, logsRes] = await Promise.all([
-          fetch("/api/admin/audit-stats", {
-            credentials: "include",
+          axiosInstance.get("/api/admin/audit-stats", {
             signal: fetchController.current.signal,
           }),
-          fetch(buildFetchUrl(f), {
-            credentials: "include",
+          axiosInstance.get(buildFetchUrl(f), {
             signal: fetchController.current.signal,
           }),
         ]);
 
-        const [statsJson, logsJson] = await Promise.all([
-          statsRes.json().catch(() => null),
-          logsRes.json().catch(() => null),
-        ]);
+        const statsJson = statsRes.data;
+        const logsJson = logsRes.data;
 
         const parsedStats = parseAuditStats(statsJson);
         const parsedLogs = parseAuditLogs(logsJson).sort((a, b) => {
@@ -284,11 +281,6 @@ export default function AuditLogsPage() {
 
         setStats(parsedStats);
         setLogs(parsedLogs);
-        if (!statsRes.ok || !logsRes.ok) {
-          const msg =
-            logsJson?.error || statsJson?.error || "Partial data available";
-          setError(msg);
-        }
       } catch (err: unknown) {
         if (err instanceof Error && err.name === "AbortError") return;
         setError(
@@ -444,16 +436,8 @@ export default function AuditLogsPage() {
 
     setLoading(true);
     try {
-      const res = await fetch("/api/admin/audit-logs", {
-        method: "DELETE",
-        credentials: "include",
-      });
-      if (res.ok) {
-        clearFilters();
-      } else {
-        const data = await res.json().catch(() => null);
-        setError(data?.error || "Failed to clear logs");
-      }
+      await axiosInstance.delete("/api/admin/audit-logs");
+      clearFilters();
     } catch (err: any) {
       setError(err.message || "Failed to clear logs");
     } finally {

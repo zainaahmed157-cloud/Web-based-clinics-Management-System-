@@ -1,6 +1,7 @@
 
 
 import { useState, useEffect, useMemo } from "react";
+import axiosInstance from "../../../api/axiosInstance";
 import {
   Building2,
   MapPin,
@@ -73,8 +74,7 @@ export default function ClinicRequests() {
 
     async function loadClinics() {
       try {
-        const res = await fetch("/api/admin/clinics", { credentials: "include" });
-        const data = await res.json();
+        const { data } = await axiosInstance.get("/api/admin/clinics");
         if (active) setClinics(data.clinics || data.data || []);
       } catch {
         if (active) setClinics([]);
@@ -103,17 +103,7 @@ export default function ClinicRequests() {
             : "reject";
       const endpoint = `/api/admin/clinics?clinic_id=${clinicId}&action=${action}`;
 
-      const response = await fetch(endpoint, {
-        method: "PATCH",
-        credentials: "include",
-      });
-      const result = await readApiResult(response);
-
-      if (!response.ok || result.success === false) {
-        throw new Error(
-          result.error || result.message || "Failed to update clinic status",
-        );
-      }
+      await axiosInstance.patch(endpoint);
 
       setClinics((prev) =>
         prev.map((c) =>

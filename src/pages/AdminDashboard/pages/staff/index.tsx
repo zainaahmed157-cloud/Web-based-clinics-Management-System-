@@ -1,6 +1,7 @@
 
 
 import { useCallback, useEffect, useMemo, useState } from "react";
+import axiosInstance from "../../../../api/axiosInstance";
 // 
 import {
   Users,
@@ -113,12 +114,11 @@ export default function StaffAdminsPage() {
       if (!uid) return;
       setPendingAction((prev) => ({ ...prev, [uid]: true }));
       try {
-        const url = activate
-          ? `/api/admin/users/${uid}/undelete`
-          : `/api/admin/users/${uid}/delete`;
-        const method = activate ? "PATCH" : "DELETE";
-        const res = await fetch(url, { method, credentials: "include" });
-        if (!res.ok) throw new Error("فشل تنفيذ العملية");
+        if (activate) {
+          await axiosInstance.patch(`/api/admin/users/${uid}/undelete`);
+        } else {
+          await axiosInstance.delete(`/api/admin/users/${uid}/delete`);
+        }
         setAdmins((prev) =>
           prev.map((a) =>
             a.user_id === uid ? { ...a, is_active: activate } : a
@@ -141,11 +141,7 @@ export default function StaffAdminsPage() {
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch("/api/admin/admins", { credentials: "include" });
-      const payload = (await res.json()) as ApiPayload;
-      if (!res.ok || payload.success === false || payload.status === "fail") {
-        throw new Error(payload.error || payload.message || "فشل تحميل البيانات");
-      }
+      const { data: payload } = await axiosInstance.get<ApiPayload>("/api/admin/admins");
       setAdmins(unwrap(payload));
     } catch (err) {
       setError(err instanceof Error ? err.message : "حدث خطأ أثناء تحميل بيانات المسؤولين.");

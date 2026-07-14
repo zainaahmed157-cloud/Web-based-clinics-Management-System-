@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Check, X } from "lucide-react";
+import axiosInstance from "../../../../api/axiosInstance";
 
 interface Doctor {
   id?: number;
@@ -77,12 +78,9 @@ export default function DoctorsList({
 
     async function loadAllDoctors() {
       try {
-        const response = await fetch("/api/admin/doctors", {
-          credentials: "include",
-        });
-        const result = await response.json();
+        const { data: result } = await axiosInstance.get("/api/admin/doctors");
 
-        if (!response.ok || !result.success) {
+        if (!result.success) {
           return;
         }
 
@@ -129,11 +127,7 @@ export default function DoctorsList({
       const endpoint = verify
         ? `/api/admin/${id}/verify`
         : `/api/admin/${id}/unverify`;
-      const response = await fetch(endpoint, {
-        method: "PATCH",
-        credentials: "include",
-      });
-      const result = await response.json();
+      const { data: result } = await axiosInstance.patch(endpoint);
       if (result.success) {
         setDoctors((prev) =>
           prev.map((doctor) =>
