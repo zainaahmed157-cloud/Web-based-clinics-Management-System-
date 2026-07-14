@@ -130,7 +130,18 @@ function normalizeDoctor(rawDoctor: unknown): AdminDoctor {
 }
 
 function unwrapDoctors(payload: DoctorsApiResponse) {
-  const doctors = payload.data ?? payload.doctors ?? [];
+  // Handle raw array response
+  if (Array.isArray(payload)) {
+    return (payload as unknown[]).map(normalizeDoctor);
+  }
+
+  const doctors = Array.isArray(payload.data)
+    ? payload.data
+    : Array.isArray(payload.doctors)
+      ? payload.doctors
+      : typeof payload.data === "object" && payload.data !== null && Array.isArray((payload.data as Record<string, unknown>).doctors)
+        ? (payload.data as Record<string, unknown>).doctors as unknown[]
+        : [];
 
   if (!Array.isArray(doctors)) {
     return [];

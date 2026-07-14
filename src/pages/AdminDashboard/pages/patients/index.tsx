@@ -216,7 +216,7 @@ export default function PatientsPage() {
       </div>
 
       {/* ── Stat Cards ── */}
-      <div className="grid gap-4 grid-cols-2 xl:grid-cols-4">
+      <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
         <StatCard
           icon={<Users size={20} />}
           label="إجمالي المرضى"
@@ -299,16 +299,16 @@ export default function PatientsPage() {
 
         {/* ── Desktop Table ── */}
         <div className="hidden overflow-x-auto sm:block">
-          <table className="w-full min-w-[800px] text-sm" dir="rtl">
+          <table className="w-full min-w-[1000px] text-sm whitespace-nowrap" dir="rtl">
             <thead>
               <tr className="border-b border-(--card-border) bg-(--hover-bg) text-right">
-                <th className="px-5 py-4 text-xs font-bold uppercase tracking-wide text-(--text-secondary)">المريض</th>
-                <th className="px-5 py-4 text-xs font-bold uppercase tracking-wide text-(--text-secondary)">التواصل</th>
-                <th className="px-5 py-4 text-xs font-bold uppercase tracking-wide text-(--text-secondary)">الجنس</th>
-                <th className="px-5 py-4 text-xs font-bold uppercase tracking-wide text-(--text-secondary)">الحجوزات</th>
-                <th className="px-5 py-4 text-xs font-bold uppercase tracking-wide text-(--text-secondary)">الحالة</th>
-                <th className="px-5 py-4 text-xs font-bold uppercase tracking-wide text-(--text-secondary)">الأرقام</th>
-                <th className="px-5 py-4 text-xs font-bold uppercase tracking-wide text-(--text-secondary)">إجراء</th>
+                <th className="px-5 py-4 text-xs font-bold uppercase tracking-wide text-(--text-secondary) text-right">المريض</th>
+                <th className="px-5 py-4 text-xs font-bold uppercase tracking-wide text-(--text-secondary) text-right">التواصل</th>
+                <th className="px-5 py-4 text-xs font-bold uppercase tracking-wide text-(--text-secondary) text-center">الجنس</th>
+                <th className="px-5 py-4 text-xs font-bold uppercase tracking-wide text-(--text-secondary) text-center">الحجوزات</th>
+                <th className="px-5 py-4 text-xs font-bold uppercase tracking-wide text-(--text-secondary) text-center">الحالة</th>
+                <th className="px-5 py-4 text-xs font-bold uppercase tracking-wide text-(--text-secondary) text-left">الأرقام</th>
+                <th className="px-5 py-4 text-xs font-bold uppercase tracking-wide text-(--text-secondary) text-left">إجراء</th>
               </tr>
             </thead>
             <tbody>
@@ -364,15 +364,15 @@ export default function PatientsPage() {
                   </td>
 
                   {/* Gender */}
-                  <td className="px-5 py-4 text-right">
-                    <span className="rounded-lg bg-(--semi-card-bg) border border-(--card-border) px-2.5 py-1 text-xs font-semibold text-(--text-primary)">
+                  <td className="px-5 py-4 text-center">
+                    <span className="rounded-lg bg-(--semi-card-bg) border border-(--card-border) px-3 py-1.5 text-xs font-semibold text-(--text-primary)">
                       {formatGender(patient.gender)}
                     </span>
                   </td>
 
                   {/* Bookings */}
                   <td className="px-5 py-4">
-                    <div className="flex flex-col gap-1 items-end text-xs text-(--text-secondary)">
+                    <div className="flex flex-col gap-1 items-center text-xs text-(--text-secondary)">
                       <span>
                         الكل:{" "}
                         <strong className="text-[#1F2B6C] font-black text-base">
@@ -389,13 +389,13 @@ export default function PatientsPage() {
                   </td>
 
                   {/* Status */}
-                  <td className="px-5 py-4">
+                  <td className="px-5 py-4 text-center">
                     <StatusBadge active={patient.is_active} />
                   </td>
 
                   {/* IDs */}
                   <td className="px-5 py-4">
-                    <div className="flex flex-col gap-1 items-end text-xs text-(--text-secondary)">
+                    <div className="flex flex-col gap-1 items-start text-xs text-(--text-secondary)">
                       <span className="flex items-center gap-1">
                         <span>#{patient.patient_id || "-"}</span>
                         <Hash size={12} className="text-[#1F2B6C]" />

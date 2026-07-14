@@ -34,8 +34,11 @@ function Dashboard({ childern }: { childern: React.ReactNode }) {
     async function fetchDashboardData() {
       try {
         const { data: result } = await axiosInstance.get("/api/admin/admin-stats");
-        if (result?.success || result?.status === "success") {
-          setDashboardData(result.data);
+        // Handle any response shape: { success, data }, { data }, or direct object
+        const payload =
+          result?.data ?? (typeof result === "object" && !Array.isArray(result) ? result : null);
+        if (payload) {
+          setDashboardData(payload);
         }
       } catch (error) {
         console.error("Failed to fetch admin dashboard data:", error);

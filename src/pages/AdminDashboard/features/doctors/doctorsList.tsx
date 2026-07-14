@@ -80,17 +80,16 @@ export default function DoctorsList({
       try {
         const { data: result } = await axiosInstance.get("/api/admin/doctors");
 
-        if (!result.success) {
-          return;
-        }
-
-        const list = Array.isArray(result.data)
-          ? result.data
-          : Array.isArray(result.doctors)
-            ? result.doctors
-            : Array.isArray(result.data?.doctors)
-              ? result.data.doctors
-              : [];
+        // Extract array from any response shape
+        const list = Array.isArray(result)
+          ? result
+          : Array.isArray(result?.data)
+            ? result.data
+            : Array.isArray(result?.doctors)
+              ? result.doctors
+              : Array.isArray(result?.data?.doctors)
+                ? result.data.doctors
+                : [];
 
         if (active) {
           setDoctors(normalizeDoctors(list));
