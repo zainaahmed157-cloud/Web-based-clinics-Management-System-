@@ -1,6 +1,7 @@
 import React from 'react';
 import { NavLink, Link, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import logoImg from '../assets/Logo1.png';
 import { useAuth } from '../context/AuthContext';
 import { Bell } from 'lucide-react';
 import axiosInstance from '../api/axiosInstance';
@@ -76,7 +77,7 @@ export default function Nav() {
       {/* Logo */}
       <div className="flex items-center gap-3">
         <Link to="/" className="block h-10 w-10">
-          <img src="src/assets/Logo1.png" alt="Medaura logo" className="h-full w-full object-contain" />
+          <img src={logoImg} alt="Medaura logo" className="h-full w-full object-contain" />
         </Link>
         <span className="text-xl font-bold tracking-wide text-[#0f1a4f]">Medaura</span>
       </div>

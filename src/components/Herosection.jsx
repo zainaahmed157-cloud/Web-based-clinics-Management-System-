@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { Users, Stethoscope, ShieldCheck } from "lucide-react";
 import { Link } from "react-router-dom";
+import landingImg from "../assets/landing.webp";
 export default function Herosection() {
     const { t, i18n } = useTranslation();
     const [displayedText, setDisplayedText] = useState("");
@@ -92,7 +93,7 @@ ${show ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"}
                             <div className="relative w-full aspect-4/5 rounded-4xl overflow-hidden bg-white shadow-sm flex items-center justify-center">
                                 <img
                                     className="w-full h-full object-cover object-center"
-                                    src="src/assets/landing.webp"
+                                    src={landingImg}
                                     alt="Doctor representation"
                                 />
                             </div>

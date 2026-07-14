@@ -1,6 +1,7 @@
 import React from 'react'
 import { Mail, Phone, Clock } from 'lucide-react';
 import { Link } from 'react-router-dom'; 
+import logoImg from '../assets/Logo1.png';
 import { useTranslation } from "react-i18next";
 export default function Footer() {
   const { t, i18n } = useTranslation();
@@ -32,7 +33,7 @@ const teamLinks = [
       <div className='flex flex-wrap justify-between gap-12 md:gap-6'>
         <div className='max-w-80'>
           <div className='flex items-center gap-2'>
-            <img src='src/assets/Logo1.png' alt='logo med' className="h-10 w-10 object-contain"/>
+            <img src={logoImg} alt='logo med' className="h-10 w-10 object-contain"/>
             <span className='text-xl font-bold tracking-wide text-white'>Medaura</span>
           </div>
           <p className='text-sm mt-2'>{t("footer.desc")}</p>
