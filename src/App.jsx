@@ -14,12 +14,12 @@ import Layout from './pages/layout';
 import Home from './pages/Home';
 import Doctors from './pages/Doctors';
 import DoctorProfile from './pages/DoctorProfile';
-import Clinics from './pages/Clinics';
 import Appointments from './pages/Appointments';
 import About from './pages/About';
 import Contact from './pages/Contact';
 import Specialties from './pages/Specialties';
 import Profile from './pages/Profile';
+import Notifications from './pages/Notifications';
 
 // Auth pages
 import Login from './pages/Login';
@@ -140,7 +140,6 @@ function App() {
         { path: 'Specialties',  element: <Specialties /> },
         { path: 'Doctors',      element: <Doctors /> },
         { path: 'doctors/:id',  element: <DoctorProfile /> },
-        { path: 'Clinics',      element: <Clinics /> },
         { path: 'Appointments', element: <Appointments /> },
         { path: 'About',        element: <About /> },
         { path: 'Contact',      element: <Contact /> },
@@ -149,6 +148,13 @@ function App() {
           element: <ProtectedRoute allowedRoles={['patient']} />,
           children: [
             { path: 'Profile', element: <Profile /> },
+          ],
+        },
+        // Logged-in users
+        {
+          element: <ProtectedRoute />,
+          children: [
+            { path: 'Notifications', element: <Notifications /> },
           ],
         },
       ],

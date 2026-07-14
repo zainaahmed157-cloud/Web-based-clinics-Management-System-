@@ -6,47 +6,32 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
-import img from "../assets/1781500009922-343817906.webp";
-import img2 from "../assets/1781500490963-621698054.webp";
+import axiosInstance from '../api/axiosInstance';
 
-const doctorsData = [
-    {
-        id: 1,
-        name: "Ahmed Mohamed",
-        specialtyKey: "consultantOrthopedics",
-        fee: "200 EGP",
-        exp: 5,
-        image: img2,
-    },
-    {
-        id: 2,
-        name: "Ali Alshawadfi",
-        specialtyKey: "consultantDentistry",
-        fee: "299 EGP",
-        exp: 8,
-        image: img,
-    },
-    {
-        id: 3,
-        name: "Ali Mohamed",
-        specialtyKey: "consultantDentistry",
-        fee: "400 EGP",
-        exp: 12,
-        image: img,
-    },
-    {
-        id: 4,
-        name: "Dr. New Test",
-        specialtyKey: "consultantCardiology",
-        fee: "500 EGP",
-        exp: 5,
-        image: img2,
-    },
-];
 export default function MostBookedDoctors() {
     const { t } = useTranslation();
     const [show, setShow] = useState(false);
     const sectionRef = useRef(null);
+    const [doctorsData, setDoctorsData] = useState([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        async function fetchDoctors() {
+            try {
+                const response = await axiosInstance.get('/api/doctors');
+                const payload = response.data;
+                const list = Array.isArray(payload) ? payload : Array.isArray(payload.data) ? payload.data : payload.data?.doctors || payload.doctors || [];
+                const sortedList = list.sort((a, b) => Number(b.average_rating || b.rating || 0) - Number(a.average_rating || a.rating || 0));
+                setDoctorsData(sortedList.slice(0, 8).map(doc => ({ ...doc, id: doc.id ?? doc.doctor_id })));
+            } catch (err) {
+                console.error("Error fetching most booked doctors:", err);
+            } finally {
+                setLoading(false);
+            }
+        }
+        fetchDoctors();
+    }, []);
+
     useEffect(() => {
         const observer = new IntersectionObserver(([entry]) => {
             if (entry.isIntersecting) setShow(true);
@@ -93,28 +78,30 @@ export default function MostBookedDoctors() {
                         },
                     }}
                 >
-                    {doctorsData.map((doc) => (
+                    {loading ? (
+                        <div className="py-20 text-center text-slate-500 font-medium">Loading doctors...</div>
+                    ) : doctorsData.map((doc) => (
                         <SwiperSlide key={doc.id}>
                             <div className={`group bg-white p-4 rounded-3xl border border-[#d8e3ff] shadow-sm overflow-hidden transition-all duration-500 hover:-translate-y-2 hover:shadow-xl  mb-6 ${show ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"}`}>
                                 <div className="overflow-hidden rounded-2xl mb-4">
-                                    <img src={doc.image} alt={doc.name} className="w-full h-60 object-cover transition-transform duration-500 group-hover:scale-110" />
+                                    <img src={doc.photo || doc.image || `https://ui-avatars.com/api/?name=${encodeURIComponent(doc.full_name || doc.name || 'Doctor')}&background=E0E7FF&color=1E3A8A&size=256`} alt={doc.full_name || doc.name} className="w-full h-60 object-cover transition-transform duration-500 group-hover:scale-110" />
                                 </div>
-                                <h3 className="font-bold text-[#0f1a4f]">{doc.name}</h3>
-                                <p className="text-sm text-[#5c6b93] mb-3">{t(`doctorsDetails.${doc.specialtyKey}`)}</p>
+                                <h3 className="font-bold text-[#0f1a4f]">{doc.full_name || doc.name}</h3>
+                                <p className="text-sm text-[#5c6b93] mb-3 line-clamp-1">{doc.specialist || doc.specialty}</p>
                                 <div className="flex items-center gap-1 text-amber-500 bg-amber-50 w-fit px-2 py-1 rounded-lg text-xs font-bold mb-4">
-                                    <Star size={12} fill="currentColor" /> 0
+                                    <Star size={12} fill="currentColor" /> {Number(doc.average_rating || doc.rating || 0).toFixed(1)}
                                 </div>
                                 <div className="bg-[#f3f7fd] p-4 rounded-2xl flex justify-between text-sm mb-4">
                                     <div>
                                         <p className="text-[#5c6b93] text-xs">{t("doctorsDetails.sessionFee")}</p>
-                                        <p className="font-bold text-[#0f1a4f]">{doc.fee}</p>
+                                        <p className="font-bold text-[#0f1a4f]">{doc.consultation_price || doc.fee} EGP</p>
                                     </div>
                                     <div>
                                         <p className="text-[#5c6b93] text-xs">{t("doctorsDetails.experience")}</p>
-                                        <p className="font-bold text-[#0f1a4f]">{doc.exp} {t("doctorsDetails.years")}</p>
+                                        <p className="font-bold text-[#0f1a4f]">{doc.experience || doc.exp || 0} {t("doctorsDetails.years")}</p>
                                     </div>
                                 </div>
-                                <Link to="/Doctors" className="block w-full py-3 bg-[#162f80] text-white text-center rounded-xl font-bold hover:bg-[#2563eb] transition-colors">
+                                <Link to={`/doctors/${doc.id}`} className="block w-full py-3 bg-[#162f80] text-white text-center rounded-xl font-bold hover:bg-[#2563eb] transition-colors">
                                     {t("doctorsDetails.viewProfile")}
                                 </Link>
                             </div>

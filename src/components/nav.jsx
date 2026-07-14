@@ -2,6 +2,8 @@ import React from 'react';
 import { NavLink, Link, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../context/AuthContext';
+import { Bell } from 'lucide-react';
+import axiosInstance from '../api/axiosInstance';
 
 export default function Nav() {
   const [open, setOpen] = React.useState(false);
@@ -10,6 +12,27 @@ export default function Nav() {
   const isEnglish = i18n.language.startsWith('en');
   const { isAuthenticated, user, logout } = useAuth();
   const navigate = useNavigate();
+  const [unreadCount, setUnreadCount] = React.useState(0);
+
+  React.useEffect(() => {
+    const fetchCount = () => {
+      if (isAuthenticated) {
+        axiosInstance.get('/api/notifications/me')
+          .then(res => {
+            let data = res.data;
+            if (data && data.data) data = data.data;
+            const list = Array.isArray(data) ? data : data?.notifications || [];
+            const count = list.filter(n => !(n.read || n.is_read)).length;
+            setUnreadCount(count);
+          })
+          .catch(err => console.error("Failed to fetch notifications nav", err));
+      }
+    };
+    
+    fetchCount();
+    window.addEventListener('notificationsUpdated', fetchCount);
+    return () => window.removeEventListener('notificationsUpdated', fetchCount);
+  }, [isAuthenticated]);
 
   const toggleLanguage = () => {
     i18n.changeLanguage(i18n.language === 'en' ? 'ar' : 'en');
@@ -43,7 +66,6 @@ export default function Nav() {
     { to: '/', label: t('home'), end: true },
     { to: '/Specialties', label: t('specialties') },
     { to: '/Doctors', label: t('doctors') },
-    { to: '/Clinics', label: t('clinics') },
     { to: '/Appointments', label: t('appointments') },
     { to: '/About', label: t('about') },
     { to: '/contact', label: t('contact') },
@@ -60,7 +82,7 @@ export default function Nav() {
       </div>
 
       {/* Desktop nav links */}
-      <div className="hidden sm:flex items-center gap-6 lg:gap-8 text-sm md:text-base">
+      <div className="hidden lg:flex items-center gap-6 lg:gap-8 text-sm md:text-base">
         {navLinks.map((link) => (
           <NavLink key={link.to} to={link.to} end={link.end} className={activeLinkStyle}>
             {link.label}
@@ -69,7 +91,7 @@ export default function Nav() {
       </div>
 
       {/* Desktop right actions */}
-      <div className="hidden sm:flex items-center gap-4">
+      <div className="hidden lg:flex items-center gap-4">
         {/* Language toggle */}
         <button
           onClick={toggleLanguage}
@@ -77,6 +99,17 @@ export default function Nav() {
         >
           {isEnglish ? 'EN' : 'ع'}
         </button>
+
+        {isAuthenticated && (
+           <Link to="/Notifications" className="relative p-2 text-[#0f1a4f] hover:bg-blue-50 rounded-full transition-colors flex items-center justify-center">
+              <Bell className="w-5 h-5" />
+              {unreadCount > 0 && (
+                <span className="absolute top-1 right-1 w-4 h-4 bg-red-500 text-white text-[10px] font-bold flex items-center justify-center rounded-full border-2 border-white">
+                  {unreadCount > 9 ? '9+' : unreadCount}
+                </span>
+              )}
+           </Link>
+        )}
 
         {isAuthenticated ? (
           /* ── Logged-in: avatar + dropdown ── */
@@ -166,7 +199,17 @@ export default function Nav() {
       </div>
 
       {/* Mobile: language + hamburger */}
-      <div className="sm:hidden flex items-center gap-2">
+      <div className="lg:hidden flex items-center gap-2">
+        {isAuthenticated && (
+           <Link to="/Notifications" className="relative p-2 text-[#0f1a4f] hover:bg-blue-50 rounded-full transition-colors mr-1">
+              <Bell className="w-5 h-5" />
+              {unreadCount > 0 && (
+                <span className="absolute top-1 right-1 w-4 h-4 bg-red-500 text-white text-[10px] font-bold flex items-center justify-center rounded-full border-2 border-[#edf2ff]">
+                  {unreadCount > 9 ? '9+' : unreadCount}
+                </span>
+              )}
+           </Link>
+        )}
         <button
           onClick={toggleLanguage}
           className="w-10 h-10 flex items-center justify-center rounded-full border border-[#0f1a4f] text-[#0f1a4f] text-xs font-bold"
@@ -182,7 +225,7 @@ export default function Nav() {
 
       {/* Mobile menu */}
       {open && (
-        <div className="absolute top-full left-0 w-full bg-[#edf2ff] border-b border-gray-200 flex flex-col p-4 gap-3 sm:hidden shadow-lg">
+        <div className="absolute top-full left-0 w-full bg-[#edf2ff] border-b border-gray-200 flex flex-col p-4 gap-3 lg:hidden shadow-lg">
           {navLinks.map((link) => (
             <NavLink
               key={link.to}

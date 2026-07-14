@@ -62,6 +62,11 @@ export function AuthProvider({ children }) {
     // It refreshes token and then checks auth.
     let cancelled = false;
 
+    if (localStorage.getItem('explicitlyLoggedOut') === 'true') {
+      setLoading(false);
+      return;
+    }
+
     const refreshPromise = axiosInstance.post('/api/auth/refresh')
       .then((res) => true)
       .catch(() => false);
@@ -82,11 +87,13 @@ export function AuthProvider({ children }) {
   }, [checkAuth]);
 
   const saveAuth = useCallback((authData) => {
+    localStorage.removeItem('explicitlyLoggedOut');
     setUser(authData);
     setError(null);
   }, []);
 
   const clearAuth = useCallback(() => {
+    localStorage.setItem('explicitlyLoggedOut', 'true');
     setUser(null);
     setError(null);
   }, []);
@@ -154,6 +161,11 @@ export function AuthProvider({ children }) {
     } catch (err) {
       // Even if logout fails, clear local state
     } finally {
+      // Also attempt to clear cookies if they are not HttpOnly
+      document.cookie = `auth_user=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
+      document.cookie = `jwt=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
+      document.cookie = `refresh_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
+      
       clearAuth();
       setLoading(false);
     }
