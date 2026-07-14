@@ -105,6 +105,7 @@ export default function StaffAdminsPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [actionError, setActionError] = useState<string | null>(null);
+  const [actionSuccess, setActionSuccess] = useState<string | null>(null);
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
   const [pendingAction, setPendingAction] = useState<Record<string | number, boolean>>({});
@@ -145,6 +146,12 @@ export default function StaffAdminsPage() {
             await axiosInstance.patch(`/api/admin/users/${uid}/deactivate`);
           }
         }
+        // Success feedback
+        const successMsg = activate
+          ? `✅ تم تفعيل حساب "${getName(admin)}" بنجاح.`
+          : `✅ تم تعطيل حساب "${getName(admin)}" بنجاح.`;
+        setActionSuccess(successMsg);
+        setTimeout(() => setActionSuccess(null), 3000);
       } catch (err) {
         // Rollback optimistic update on failure
         setAdmins((prev) =>
@@ -261,6 +268,22 @@ export default function StaffAdminsPage() {
           <button
             onClick={() => setActionError(null)}
             className="shrink-0 text-red-400 hover:text-red-600 transition cursor-pointer"
+          >
+            <XCircle size={18} />
+          </button>
+        </div>
+      )}
+
+      {/* Action Success Banner */}
+      {actionSuccess && (
+        <div className="flex items-center justify-between gap-3 rounded-2xl border border-green-200 bg-green-50 p-4 text-sm text-green-700">
+          <div className="flex items-center gap-2.5">
+            <CheckCircle2 size={18} className="shrink-0" />
+            <span>{actionSuccess}</span>
+          </div>
+          <button
+            onClick={() => setActionSuccess(null)}
+            className="shrink-0 text-green-400 hover:text-green-600 transition cursor-pointer"
           >
             <XCircle size={18} />
           </button>
