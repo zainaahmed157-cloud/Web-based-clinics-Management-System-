@@ -6,6 +6,7 @@ import { Bell, RefreshCw, CheckCircle2 } from "lucide-react";
 import type { Notification } from "@/lib/types/api";
 import { fetchNotificationsClient } from "@/lib/utils/fetchNotifications";
 import { useAuth } from "@/context/AuthContext";
+import axiosInstance from "@/api/axiosInstance";
 
 const PAGE_SIZE = 10;
 
@@ -85,10 +86,7 @@ export default function AdminNotificationsPage() {
     );
 
     try {
-      await fetch(`/api/notifications/${notificationId}/read`, {
-        method: "PATCH",
-        credentials: "include",
-      });
+      await axiosInstance.patch(`/api/notifications/${notificationId}/read`);
     } catch (err) {
       // Best-effort; refresh will reconcile.
     }
@@ -104,10 +102,7 @@ export default function AdminNotificationsPage() {
 
     await Promise.all(
       unread.map((notification) =>
-        fetch(`/api/notifications/${notification.id}/read`, {
-          method: "PATCH",
-          credentials: "include",
-        })
+        axiosInstance.patch(`/api/notifications/${notification.id}/read`)
       )
     );
   }, [notifications]);
