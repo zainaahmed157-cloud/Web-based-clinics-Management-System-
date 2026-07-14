@@ -104,6 +104,7 @@ export default function StaffAdminsPage() {
   const [admins, setAdmins] = useState<AdminUser[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [actionError, setActionError] = useState<string | null>(null);
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
   const [pendingAction, setPendingAction] = useState<Record<string | number, boolean>>({});
@@ -112,20 +113,45 @@ export default function StaffAdminsPage() {
     async (admin: AdminUser, activate: boolean) => {
       const uid = admin.user_id;
       if (!uid) return;
+
+      // Confirmation dialog
+      const confirmed = window.confirm(
+        activate
+          ? `هل أنت متأكد من تفعيل حساب "${getName(admin)}"؟`
+          : `هل أنت متأكد من تعطيل حساب "${getName(admin)}"؟ لن يتمكن المستخدم من تسجيل الدخول.`
+      );
+      if (!confirmed) return;
+
+      setActionError(null);
+      // Optimistic update
+      setAdmins((prev) =>
+        prev.map((a) => (a.user_id === uid ? { ...a, is_active: activate } : a))
+      );
       setPendingAction((prev) => ({ ...prev, [uid]: true }));
+
       try {
         if (activate) {
-          await axiosInstance.patch(`/api/admin/users/${uid}/undelete`);
+          // Try multiple possible endpoint patterns for reactivation
+          try {
+            await axiosInstance.patch(`/api/admin/users/${uid}/undelete`);
+          } catch {
+            await axiosInstance.patch(`/api/admin/users/${uid}/activate`);
+          }
         } else {
-          await axiosInstance.delete(`/api/admin/users/${uid}/delete`);
+          // Try multiple possible endpoint patterns for deactivation
+          try {
+            await axiosInstance.delete(`/api/admin/users/${uid}`);
+          } catch {
+            await axiosInstance.patch(`/api/admin/users/${uid}/deactivate`);
+          }
         }
+      } catch (err) {
+        // Rollback optimistic update on failure
         setAdmins((prev) =>
-          prev.map((a) =>
-            a.user_id === uid ? { ...a, is_active: activate } : a
-          )
+          prev.map((a) => (a.user_id === uid ? { ...a, is_active: !activate } : a))
         );
-      } catch {
-        // silent — keep existing state
+        const msg = err instanceof Error ? err.message : "فشل تغيير حالة الحساب";
+        setActionError(`❌ ${msg} — تأكد من صلاحياتك أو تحقق من اتصالك بالإنترنت.`);
       } finally {
         setPendingAction((prev) => {
           const next = { ...prev };
@@ -221,6 +247,22 @@ export default function StaffAdminsPage() {
           >
             <RefreshCw size={14} />
             إعادة المحاولة
+          </button>
+        </div>
+      )}
+
+      {/* Action Error Banner */}
+      {actionError && (
+        <div className="flex items-center justify-between gap-3 rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
+          <div className="flex items-center gap-2.5">
+            <AlertCircle size={18} className="shrink-0" />
+            <span>{actionError}</span>
+          </div>
+          <button
+            onClick={() => setActionError(null)}
+            className="shrink-0 text-red-400 hover:text-red-600 transition cursor-pointer"
+          >
+            <XCircle size={18} />
           </button>
         </div>
       )}
