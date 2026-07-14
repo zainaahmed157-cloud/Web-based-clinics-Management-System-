@@ -20,7 +20,6 @@ import {
   Users,
   User,
   ShieldCheck,
-  CalendarDays,
 } from "lucide-react";
 
 function Dashboard({ childern }: { childern: React.ReactNode }) {
@@ -99,13 +98,6 @@ function Dashboard({ childern }: { childern: React.ReactNode }) {
                 percentage={5}
                 icon={<ShieldCheck size={24} className="text-[#00796B]" />}
                 iconBg="bg-[#E0F2F1]"
-              />
-              <MiniStatsCard
-                title="مواعيد اليوم"
-                value={124}
-                percentage={-2}
-                icon={<CalendarDays size={24} className="text-[#EB642F]" />}
-                iconBg="bg-[#FDECE5]"
               />
             </div>
           </div>

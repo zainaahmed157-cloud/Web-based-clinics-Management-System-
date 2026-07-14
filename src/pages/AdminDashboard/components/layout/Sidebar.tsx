@@ -43,7 +43,6 @@ function Sidebar({ open, onClose }: SidebarProps) {
       items: [
         { text: t("dashboard.sidebar.patients", locale), icon: <Users size={18} />, href: "/admin-dashboard/pages/patients" },
         { text: t("dashboard.sidebar.doctors", locale), icon: <Stethoscope size={18} />, href: "/admin-dashboard/pages/doctors/requests" },
-        { text: t("dashboard.sidebar.appointments", locale), icon: <Calendar size={18} />, href: "/admin-dashboard/pages/appointments" },
       ],
     },
     {
