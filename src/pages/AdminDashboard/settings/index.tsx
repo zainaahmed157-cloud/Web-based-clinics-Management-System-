@@ -101,7 +101,11 @@ export default function AdminSettingsPage() {
         formData.append("photo", photoFile);
       }
 
-      const response = await axiosInstance.patch("/api/user/me", formData);
+      const response = await axiosInstance.patch("/api/user/me", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
 
       const result = response.data;
       if (result.success === false || result.status === "error" || result.status === "fail") {
