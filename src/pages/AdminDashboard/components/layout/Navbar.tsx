@@ -1,5 +1,3 @@
-
-
 import {
   Bell,
   Search,
@@ -13,7 +11,7 @@ import {
 } from "lucide-react";
 import { useState, useRef, useEffect, useCallback } from "react";
 import { formatDistanceToNow } from "date-fns";
-// 
+//
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
 import type { Notification } from "@/lib/types/api";
@@ -30,10 +28,24 @@ const getNotificationAvatarLetter = (title: string, message: string) => {
   return title?.[0]?.toUpperCase() || "N";
 };
 
-const NotificationAvatar = ({ notification, size = "w-9 h-9", textSize = "text-sm" }: { notification: any, size?: string, textSize?: string }) => {
+const NotificationAvatar = ({
+  notification,
+  size = "w-9 h-9",
+  textSize = "text-sm",
+}: {
+  notification: any;
+  size?: string;
+  textSize?: string;
+}) => {
   const [error, setError] = useState(false);
   const photo = notification.photo || notification.image || notification.avatar;
-  const isValid = photo && typeof photo === "string" && photo !== "[object Object]" && photo !== "undefined" && photo !== "null" && !error;
+  const isValid =
+    photo &&
+    typeof photo === "string" &&
+    photo !== "[object Object]" &&
+    photo !== "undefined" &&
+    photo !== "null" &&
+    !error;
 
   if (isValid) {
     return (
@@ -47,7 +59,9 @@ const NotificationAvatar = ({ notification, size = "w-9 h-9", textSize = "text-s
   }
 
   return (
-    <div className={`${size} rounded-full bg-[#e7edf3] flex items-center justify-center ${textSize} font-semibold text-[#1f6feb]`}>
+    <div
+      className={`${size} rounded-full bg-[#e7edf3] flex items-center justify-center ${textSize} font-semibold text-[#1f6feb]`}
+    >
       {getNotificationAvatarLetter(notification.title, notification.message)}
     </div>
   );
@@ -60,7 +74,9 @@ function Navbar({ onToggleSidebar }: { onToggleSidebar: () => void }) {
   const [profileOpen, setProfileOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const adminName =
-    (user?.profile?.full_name as string) || user?.email?.split("@")[0] || t("dashboard.header.admin", locale);
+    (user?.profile?.full_name as string) ||
+    user?.email?.split("@")[0] ||
+    t("dashboard.header.admin", locale);
   const adminEmail = user?.email || "";
 
   const toggleLocale = () => {
@@ -74,7 +90,9 @@ function Navbar({ onToggleSidebar }: { onToggleSidebar: () => void }) {
   };
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [notificationsLoading, setNotificationsLoading] = useState(false);
-  const [notificationsError, setNotificationsError] = useState<string | null>(null);
+  const [notificationsError, setNotificationsError] = useState<string | null>(
+    null,
+  );
   const [query, setQuery] = useState("");
   const avatarSrc =
     (typeof user?.photo === "string" && user.photo) ||
@@ -85,6 +103,8 @@ function Navbar({ onToggleSidebar }: { onToggleSidebar: () => void }) {
   const searchRef = useRef<HTMLDivElement | null>(null);
   const searchInputRef = useRef<HTMLInputElement | null>(null);
   const navigate = useNavigate();
+  const searchPlaceholder =
+    locale === "ar" ? "ابحث في لوحة التحكم..." : "Search in dashboard...";
 
   // Close all dropdowns on outside click
   useEffect(() => {
@@ -130,10 +150,12 @@ function Navbar({ onToggleSidebar }: { onToggleSidebar: () => void }) {
       if (!result.success) {
         throw new Error(result.error || "Failed to fetch notifications");
       }
-      const items: Notification[] = Array.isArray(result.data) ? result.data : [];
+      const items: Notification[] = Array.isArray(result.data)
+        ? result.data
+        : [];
       items.sort(
         (a, b) =>
-          new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+          new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
       );
       setNotifications(items);
     } catch (err) {
@@ -160,7 +182,7 @@ function Navbar({ onToggleSidebar }: { onToggleSidebar: () => void }) {
 
   const markNotificationRead = useCallback(async (notificationId: string) => {
     setNotifications((prev) =>
-      prev.map((n) => (n.id === notificationId ? { ...n, read: true } : n))
+      prev.map((n) => (n.id === notificationId ? { ...n, read: true } : n)),
     );
     try {
       await axiosInstance.patch(`/api/notifications/${notificationId}/read`);
@@ -174,7 +196,7 @@ function Navbar({ onToggleSidebar }: { onToggleSidebar: () => void }) {
     if (!unread.length) return;
     setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
     await Promise.all(
-      unread.map((n) => axiosInstance.patch(`/api/notifications/${n.id}/read`))
+      unread.map((n) => axiosInstance.patch(`/api/notifications/${n.id}/read`)),
     );
   }, [notifications]);
 
@@ -214,7 +236,6 @@ function Navbar({ onToggleSidebar }: { onToggleSidebar: () => void }) {
     <header className="w-full sticky top-0 z-50 bg-white border-b border-[#e6eaf0] shadow-sm">
       <div className="px-3 sm:px-6 py-3">
         <div className="flex items-center gap-2 sm:gap-3">
-
           {/* Sidebar toggle and Logo (Mobile) */}
           <div className="flex items-center gap-2 lg:hidden">
             <button
@@ -251,7 +272,7 @@ function Navbar({ onToggleSidebar }: { onToggleSidebar: () => void }) {
             <input
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder={t("dashboard.header.searchPlaceholder", locale)}
+              placeholder={searchPlaceholder}
               className="w-full pl-9 pr-4 py-2 rounded-xl border border-[#e6eaf0] bg-[#f6f8fb] text-sm text-[#0f1b3d] placeholder-[#a0aab8] focus:outline-none focus:ring-2 focus:ring-[#1f6feb]/30 focus:border-[#1f6feb] transition"
             />
           </form>
@@ -272,17 +293,27 @@ function Navbar({ onToggleSidebar }: { onToggleSidebar: () => void }) {
 
             {searchOpen && (
               <div className="absolute ltr:right-0 rtl:left-0 top-full mt-2 w-[calc(100vw-1.5rem)] max-w-xs z-50">
-                <form onSubmit={handleSearch} className="flex gap-2 p-2 bg-white border border-[#e6eaf0] rounded-2xl shadow-lg">
-                  <Search size={16} className="flex-shrink-0 self-center text-[#5e6b85] ml-1" />
+                <form
+                  onSubmit={handleSearch}
+                  className="flex gap-2 p-2 bg-white border border-[#e6eaf0] rounded-2xl shadow-lg"
+                >
+                  <Search
+                    size={16}
+                    className="flex-shrink-0 self-center text-[#5e6b85] ml-1"
+                  />
                   <input
                     ref={searchInputRef}
                     value={query}
                     onChange={(e) => setQuery(e.target.value)}
-                    placeholder={t("dashboard.header.searchPlaceholder", locale)}
+                    placeholder={searchPlaceholder}
                     className="flex-1 py-1 text-sm text-[#0f1b3d] placeholder-[#a0aab8] focus:outline-none bg-transparent"
                   />
                   {query && (
-                    <button type="button" onClick={() => setQuery("")} className="text-[#a0aab8]">
+                    <button
+                      type="button"
+                      onClick={() => setQuery("")}
+                      className="text-[#a0aab8]"
+                    >
                       <X size={14} />
                     </button>
                   )}
@@ -296,7 +327,9 @@ function Navbar({ onToggleSidebar }: { onToggleSidebar: () => void }) {
             type="button"
             onClick={toggleLocale}
             className="inline-flex h-9 px-3 items-center gap-1.5 rounded-xl border border-[#e6eaf0] bg-white text-xs font-semibold text-[#0f1b3d] hover:bg-[#f1f4f9] transition"
-            title={locale === "en" ? "Change to Arabic" : "تغيير إلى الإنجليزية"}
+            title={
+              locale === "en" ? "Change to Arabic" : "تغيير إلى الإنجليزية"
+            }
           >
             <Globe size={14} className="text-[#5e6b85]" />
             <span className="uppercase">{locale === "en" ? "ar" : "en"}</span>
@@ -321,11 +354,16 @@ function Navbar({ onToggleSidebar }: { onToggleSidebar: () => void }) {
             </button>
 
             {notifOpen && (
-              <div className="absolute ltr:right-0 rtl:left-0 sm:ltr:right-0 sm:rtl:left-0 mt-2 w-[300px] sm:w-96 max-w-[calc(100vw-2rem)] bg-white border border-[#e6eaf0] rounded-2xl shadow-2xl z-50 overflow-hidden" style={{[locale === 'ar' ? 'left' : 'right']: 0}}>
+              <div
+                className="absolute ltr:right-0 rtl:left-0 sm:ltr:right-0 sm:rtl:left-0 mt-2 w-[300px] sm:w-96 max-w-[calc(100vw-2rem)] bg-white border border-[#e6eaf0] rounded-2xl shadow-2xl z-50 overflow-hidden"
+                style={{ [locale === "ar" ? "left" : "right"]: 0 }}
+              >
                 {/* Header */}
                 <div className="flex items-center justify-between px-4 py-3 border-b border-[#e6eaf0]">
                   <div className="flex items-center gap-2">
-                    <h4 className="text-sm font-semibold text-[#0f1b3d]">{t("dashboard.header.notifications", locale)}</h4>
+                    <h4 className="text-sm font-semibold text-[#0f1b3d]">
+                      {t("dashboard.header.notifications", locale)}
+                    </h4>
                     {unreadCount > 0 && (
                       <span className="px-1.5 py-0.5 bg-[#1f6feb] text-white text-[10px] font-bold rounded-full">
                         {unreadCount}
@@ -338,7 +376,8 @@ function Navbar({ onToggleSidebar }: { onToggleSidebar: () => void }) {
                         onClick={markAllRead}
                         className="inline-flex items-center gap-1 text-xs text-[#1f6feb] hover:text-[#1b5bd7] px-2 py-1 rounded-lg hover:bg-[#f1f4f9] transition"
                       >
-                        <CheckCheck size={12} /> {t("dashboard.header.allRead", locale)}
+                        <CheckCheck size={12} />{" "}
+                        {t("dashboard.header.allRead", locale)}
                       </button>
                     )}
                     <button
@@ -361,7 +400,8 @@ function Navbar({ onToggleSidebar }: { onToggleSidebar: () => void }) {
                 <div className="max-h-72 overflow-y-auto">
                   {notificationsLoading && (
                     <div className="flex items-center justify-center py-8 text-sm text-[#5e6b85]">
-                      <RefreshCw size={16} className="animate-spin mr-2" /> {t("dashboard.header.loading", locale)}
+                      <RefreshCw size={16} className="animate-spin mr-2" />{" "}
+                      {t("dashboard.header.loading", locale)}
                     </div>
                   )}
                   {!notificationsLoading && notificationsError && (
@@ -369,12 +409,14 @@ function Navbar({ onToggleSidebar }: { onToggleSidebar: () => void }) {
                       {notificationsError}
                     </div>
                   )}
-                  {!notificationsLoading && !notificationsError && notifications.length === 0 && (
-                    <div className="flex flex-col items-center py-8 text-sm text-[#5e6b85]">
-                      <Bell size={28} className="mb-2 text-[#d8dee7]" />
-                      {t("dashboard.header.noNotifications", locale)}
-                    </div>
-                  )}
+                  {!notificationsLoading &&
+                    !notificationsError &&
+                    notifications.length === 0 && (
+                      <div className="flex flex-col items-center py-8 text-sm text-[#5e6b85]">
+                        <Bell size={28} className="mb-2 text-[#d8dee7]" />
+                        {t("dashboard.header.noNotifications", locale)}
+                      </div>
+                    )}
                   {!notificationsLoading &&
                     !notificationsError &&
                     notifications.map((n) => (
@@ -396,14 +438,18 @@ function Navbar({ onToggleSidebar }: { onToggleSidebar: () => void }) {
                         </div>
                         <div className="flex-1 min-w-0">
                           <div className="flex items-start justify-between gap-2">
-                            <p className={`text-sm font-medium text-[#0f1b3d] truncate ${!n.read ? "font-semibold" : ""}`}>
+                            <p
+                              className={`text-sm font-medium text-[#0f1b3d] truncate ${!n.read ? "font-semibold" : ""}`}
+                            >
                               {n.title}
                             </p>
                             <span className="text-[10px] text-[#a0aab8] whitespace-nowrap flex-shrink-0 mt-0.5">
                               {formatNotificationTime(n.created_at)}
                             </span>
                           </div>
-                          <p className="text-xs text-[#5e6b85] mt-0.5 truncate">{n.message}</p>
+                          <p className="text-xs text-[#5e6b85] mt-0.5 truncate">
+                            {n.message}
+                          </p>
                         </div>
                       </div>
                     ))}
@@ -435,7 +481,8 @@ function Navbar({ onToggleSidebar }: { onToggleSidebar: () => void }) {
               aria-expanded={profileOpen}
             >
               {/* Avatar */}
-              {avatarSrc && avatarSrc !== "/images/blank-profile-picture.png" ? (
+              {avatarSrc &&
+              avatarSrc !== "/images/blank-profile-picture.png" ? (
                 <img
                   src={avatarSrc}
                   alt={adminName}
@@ -450,26 +497,49 @@ function Navbar({ onToggleSidebar }: { onToggleSidebar: () => void }) {
               )}
               {/* Name — hidden on small screens */}
               <div className="hidden sm:block text-left min-w-0">
-                <p className="text-xs font-semibold text-[#0f1b3d] truncate max-w-[120px]">{adminName}</p>
-                <p className="text-[10px] text-[#5e6b85] truncate max-w-[120px]">{adminEmail}</p>
+                <p className="text-xs font-semibold text-[#0f1b3d] truncate max-w-[120px]">
+                  {adminName}
+                </p>
+                <p className="text-[10px] text-[#5e6b85] truncate max-w-[120px]">
+                  {adminEmail}
+                </p>
               </div>
-              <ChevronDown size={14} className={`hidden sm:block text-[#5e6b85] transition-transform ${profileOpen ? "rotate-180" : ""}`} />
+              <ChevronDown
+                size={14}
+                className={`hidden sm:block text-[#5e6b85] transition-transform ${profileOpen ? "rotate-180" : ""}`}
+              />
             </button>
 
             {profileOpen && (
-              <div className="absolute ltr:right-0 rtl:left-0 sm:ltr:right-0 sm:rtl:left-0 top-full mt-2 w-48 sm:w-52 bg-white border border-[#e6eaf0] rounded-2xl shadow-xl z-50 overflow-hidden" style={{[locale === 'ar' ? 'left' : 'right']: 0}}>
+              <div
+                className="absolute ltr:right-0 rtl:left-0 sm:ltr:right-0 sm:rtl:left-0 top-full mt-2 w-48 sm:w-52 bg-white border border-[#e6eaf0] rounded-2xl shadow-xl z-50 overflow-hidden"
+                style={{ [locale === "ar" ? "left" : "right"]: 0 }}
+              >
                 {/* Profile header */}
                 <div className="flex items-center gap-3 px-4 py-3 bg-[#f6f8fb] border-b border-[#e6eaf0]">
-                  {avatarSrc && avatarSrc !== "/images/blank-profile-picture.png" ? (
-                    <img src={avatarSrc} alt={adminName} width={36} height={36} className="w-9 h-9 rounded-full object-cover flex-shrink-0" />
+                  {avatarSrc &&
+                  avatarSrc !== "/images/blank-profile-picture.png" ? (
+                    <img
+                      src={avatarSrc}
+                      alt={adminName}
+                      width={36}
+                      height={36}
+                      className="w-9 h-9 rounded-full object-cover flex-shrink-0"
+                    />
                   ) : (
                     <div className="w-9 h-9 rounded-full bg-[#1f6feb] flex items-center justify-center text-white text-sm font-bold flex-shrink-0">
                       {initials}
                     </div>
                   )}
                   <div className="min-w-0">
-                    <p className="text-sm font-semibold text-[#0f1b3d] truncate">{adminName}</p>
-                    {adminEmail && <p className="text-[11px] text-[#5e6b85] truncate">{adminEmail}</p>}
+                    <p className="text-sm font-semibold text-[#0f1b3d] truncate">
+                      {adminName}
+                    </p>
+                    {adminEmail && (
+                      <p className="text-[11px] text-[#5e6b85] truncate">
+                        {adminEmail}
+                      </p>
+                    )}
                   </div>
                 </div>
 
@@ -480,13 +550,12 @@ function Navbar({ onToggleSidebar }: { onToggleSidebar: () => void }) {
                     className="w-full flex items-center gap-2.5 px-3 py-2 text-sm text-red-600 hover:bg-red-50 rounded-xl transition"
                   >
                     <LogOut size={15} />
-                    <span>{t("dashboard.header.signOut", locale)}</span>
+                    <span>{locale === "ar" ? "تسجيل الخروج" : "Sign out"}</span>
                   </button>
                 </div>
               </div>
             )}
           </div>
-
         </div>
       </div>
     </header>
