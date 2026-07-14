@@ -389,7 +389,7 @@ export default function Appointments() {
                     <div className="border-t border-slate-200 pt-4">
                       <dl className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                         {Object.entries(booking).map(([key, value]) => {
-                          if (['id', '_id', 'booking_id', 'prescription'].includes(key)) return null;
+                          if (['id', '_id', 'booking_id', 'prescription', 'patient_photo'].includes(key)) return null;
                           if (value === null || value === undefined || value === '') return null;
                           if (typeof value === 'object') return null;
                           

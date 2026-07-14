@@ -4,10 +4,21 @@ import axiosInstance from '../api/axiosInstance';
 const AuthContext = createContext(null);
 
 function normalizeAuthResponse(authData) {
-  const token = authData.token || authData.access_token || authData.accessToken || authData.access;
+  if (!authData) return authData;
 
-  if (authData.status === 'success' && authData.user) {
-    const backendUser = authData.user;
+  // Unwrap nested data
+  let current = authData;
+  while (current && current.data && typeof current.data === 'object' && !Array.isArray(current.data)) {
+    current = current.data;
+  }
+
+  const token = current.token || current.access_token || current.accessToken || current.access || authData.token || authData.access_token || authData.accessToken || authData.access;
+
+  const targetUser = current.user || authData.user || current;
+  const status = current.status || authData.status || '';
+
+  if ((status === 'success' || targetUser.user_id || targetUser.id) && targetUser && targetUser !== authData) {
+    const backendUser = targetUser;
     return {
       id: backendUser.user_id || backendUser.id,
       email: backendUser.email,
@@ -25,25 +36,49 @@ function normalizeAuthResponse(authData) {
   };
 }
 
+const setTokenCookie = (token) => {
+  if (token) {
+    document.cookie = `token=${token}; path=/; max-age=${7 * 24 * 60 * 60}; SameSite=Lax`;
+    document.cookie = `jwt=${token}; path=/; max-age=${7 * 24 * 60 * 60}; SameSite=Lax`;
+  }
+};
+
+const clearTokenCookie = () => {
+  document.cookie = `token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
+  document.cookie = `jwt=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
+  document.cookie = `auth_user=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
+  document.cookie = `refresh_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
+};
+
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const checkAuth = useCallback(async () => {
+  const checkAuth = useCallback(async (tokenFromRefresh) => {
     try {
       const response = await axiosInstance.get('/api/user/me');
       const result = response.data;
+      let authData;
       if (result.success && result.data) {
-        setUser(normalizeAuthResponse(result.data));
+        authData = normalizeAuthResponse(result.data);
       } else if (result.user) {
-         setUser(normalizeAuthResponse({ status: 'success', user: result.user }));
+         authData = normalizeAuthResponse({ status: 'success', user: result.user });
       } else {
-         setUser(normalizeAuthResponse(result));
+         authData = normalizeAuthResponse(result);
       }
+      
+      const finalToken = tokenFromRefresh || authData.token;
+      if (finalToken) {
+        authData.token = finalToken;
+        setTokenCookie(finalToken);
+      }
+      
+      setUser(authData);
     } catch (err) {
       // Not authenticated
       setUser(null);
+      clearTokenCookie();
     } finally {
       setLoading(false);
     }
@@ -52,30 +87,29 @@ export function AuthProvider({ children }) {
   useEffect(() => {
     // 1. Clear any leftover localStorage data from earlier attempts
     localStorage.removeItem('user');
-    
-    // 2. Clear any custom cookies created in earlier attempts
-    document.cookie = `auth_user=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
-    document.cookie = `jwt=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
-    document.cookie = `refresh_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
 
     // Medaura uses /api/auth/refresh to handle initial session load. 
     // It refreshes token and then checks auth.
     let cancelled = false;
 
     if (localStorage.getItem('explicitlyLoggedOut') === 'true') {
+      clearTokenCookie();
       setLoading(false);
       return;
     }
 
     const refreshPromise = axiosInstance.post('/api/auth/refresh')
-      .then((res) => true)
-      .catch(() => false);
+      .then((res) => res.data)
+      .catch(() => null);
 
-    refreshPromise.then((isSuccess) => {
+    refreshPromise.then((result) => {
       if (!cancelled) {
-        if (isSuccess) {
-          checkAuth();
+        if (result && (result.success || result.status === 'success')) {
+          const data = result.data || result;
+          const token = data.token || data.access_token || data.accessToken || data.access;
+          checkAuth(token);
         } else {
+          clearTokenCookie();
           setLoading(false);
         }
       }
@@ -90,12 +124,16 @@ export function AuthProvider({ children }) {
     localStorage.removeItem('explicitlyLoggedOut');
     setUser(authData);
     setError(null);
+    if (authData?.token) {
+      setTokenCookie(authData.token);
+    }
   }, []);
 
   const clearAuth = useCallback(() => {
     localStorage.setItem('explicitlyLoggedOut', 'true');
     setUser(null);
     setError(null);
+    clearTokenCookie();
   }, []);
 
   const login = useCallback(
@@ -161,11 +199,7 @@ export function AuthProvider({ children }) {
     } catch (err) {
       // Even if logout fails, clear local state
     } finally {
-      // Also attempt to clear cookies if they are not HttpOnly
-      document.cookie = `auth_user=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
-      document.cookie = `jwt=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
-      document.cookie = `refresh_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
-      
+      clearTokenCookie();
       clearAuth();
       setLoading(false);
     }

@@ -83,7 +83,8 @@ className="min-h-screen p-4 md:p-10 flex justify-center items-start"
         {specialtiesData.map((item) => {
             const IconComponent = item.icon;
             return (
-        <div 
+        <Link 
+    to={`/Doctors?specialist=${item.key}`}
     key={item.id} 
     className={`flex flex-col items-center justify-center p-6 bg-[#f7f9ff] rounded-3xl border border-blue-50/80 cursor-pointer group 
     transition-all duration-500 ease-out 
@@ -109,7 +110,7 @@ className="min-h-screen p-4 md:p-10 flex justify-center items-start"
                 <span className="text-[#5c6b93] text-xs font-medium tracking-wide">
         {item.count} {t("specialtiesPanel.doctors")}
         </span>
-            </div>
+            </Link>
             );
         })}
         </div>
