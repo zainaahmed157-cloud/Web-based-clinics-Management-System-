@@ -122,16 +122,23 @@ function parseAuditStats(result: unknown): AuditStats | null {
 
 function parseAuditLogs(result: unknown): AuditLog[] {
   if (!result) return [];
-  if (Array.isArray(result)) return result;
-  if (typeof result !== "object") return [];
-  const r = result as Record<string, unknown>;
-  if (Array.isArray(r.data)) return r.data as AuditLog[];
-  if (Array.isArray(r.logs)) return r.logs as AuditLog[];
-  if (r.data && typeof r.data === "object") {
-    const d = r.data as Record<string, unknown>;
-    if (Array.isArray(d.logs)) return d.logs as AuditLog[];
+  let raw: AuditLog[] = [];
+  if (Array.isArray(result)) raw = result;
+  else if (typeof result === "object") {
+    const r = result as Record<string, unknown>;
+    if (Array.isArray(r.data)) raw = r.data as AuditLog[];
+    else if (Array.isArray(r.logs)) raw = r.logs as AuditLog[];
+    else if (r.data && typeof r.data === "object") {
+      const d = r.data as Record<string, unknown>;
+      if (Array.isArray(d.logs)) raw = d.logs as AuditLog[];
+    }
   }
-  return [];
+  // Normalize each log entry to fill in missing fields
+  return raw.map((log) => ({
+    ...log,
+    id: log.id ?? log.log_id,
+    timestamp: log.timestamp ?? log.created_at,
+  }));
 }
 
 function getActorName(log: AuditLog) {
@@ -356,22 +363,32 @@ export default function AuditLogsPage() {
 
   // Derived stats (always from raw logs count)
   const derivedStats = useMemo(() => {
+    // Always compute from fetched logs — most reliable source
     const totals = { info: 0, error: 0, success: 0, failed: 0 };
     logs.forEach((log) => {
       const level = log.level?.toLowerCase();
+      const code = log.status_code;
       if (level === "info") totals.info++;
-      if (level === "error") totals.error++;
-      if (typeof log.status_code === "number") {
-        if (log.status_code >= 200 && log.status_code < 400) totals.success++;
-        if (log.status_code >= 400) totals.failed++;
+      if (level === "error" || level === "warn" || level === "warning") totals.error++;
+      if (level === "success") totals.success++;
+      if (typeof code === "number") {
+        if (code >= 200 && code < 400) totals.success++;
+        if (code >= 400) totals.failed++;
       }
     });
+    // Prefer API stats fields (try multiple possible key names)
+    const apiTotal =
+      stats?.total_logs ?? stats?.total ?? logs.length;
+    const apiInfo = stats?.total_info_logs ?? stats?.info ?? totals.info;
+    const apiError = stats?.total_error_logs ?? stats?.errors ?? totals.error;
+    const apiSuccess = stats?.total_success_logs ?? stats?.success ?? totals.success;
+    const apiFailed = stats?.total_failed_logs ?? stats?.failed ?? totals.failed;
     return {
-      total_logs: stats?.total_logs ?? logs.length,
-      total_info_logs: stats?.total_info_logs ?? totals.info,
-      total_error_logs: stats?.total_error_logs ?? totals.error,
-      total_success_logs: stats?.total_success_logs ?? totals.success,
-      total_failed_logs: stats?.total_failed_logs ?? totals.failed,
+      total_logs: apiTotal,
+      total_info_logs: apiInfo,
+      total_error_logs: apiError,
+      total_success_logs: apiSuccess,
+      total_failed_logs: apiFailed,
     };
   }, [stats, logs]);
 

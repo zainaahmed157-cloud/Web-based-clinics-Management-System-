@@ -22,7 +22,7 @@ export default defineConfig(({ mode }) => {
       strictPort: true, 
       proxy: {
         '/api': {
-          target: env.VITE_API_BASE_URL || 'http://127.0.0.1:3001',
+          target: env.VITE_API_BASE_URL || 'https://clynk.vercel.app',
           changeOrigin: true,
           secure: false,
           cookieDomainRewrite: {
