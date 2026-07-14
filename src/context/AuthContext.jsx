@@ -36,13 +36,6 @@ function normalizeAuthResponse(authData) {
   };
 }
 
-const setTokenCookie = (token) => {
-  if (token) {
-    document.cookie = `token=${token}; path=/; max-age=${7 * 24 * 60 * 60}; SameSite=Lax`;
-    document.cookie = `jwt=${token}; path=/; max-age=${7 * 24 * 60 * 60}; SameSite=Lax`;
-  }
-};
-
 const clearTokenCookie = () => {
   document.cookie = `token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
   document.cookie = `jwt=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
@@ -55,30 +48,20 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const checkAuth = useCallback(async (tokenFromRefresh) => {
+  const checkAuth = useCallback(async () => {
     try {
       const response = await axiosInstance.get('/api/user/me');
       const result = response.data;
-      let authData;
       if (result.success && result.data) {
-        authData = normalizeAuthResponse(result.data);
+        setUser(normalizeAuthResponse(result.data));
       } else if (result.user) {
-         authData = normalizeAuthResponse({ status: 'success', user: result.user });
+         setUser(normalizeAuthResponse({ status: 'success', user: result.user }));
       } else {
-         authData = normalizeAuthResponse(result);
+         setUser(normalizeAuthResponse(result));
       }
-      
-      const finalToken = tokenFromRefresh || authData.token;
-      if (finalToken) {
-        authData.token = finalToken;
-        setTokenCookie(finalToken);
-      }
-      
-      setUser(authData);
     } catch (err) {
       // Not authenticated
       setUser(null);
-      clearTokenCookie();
     } finally {
       setLoading(false);
     }
@@ -87,29 +70,30 @@ export function AuthProvider({ children }) {
   useEffect(() => {
     // 1. Clear any leftover localStorage data from earlier attempts
     localStorage.removeItem('user');
+    
+    // 2. Clear any custom cookies created in earlier attempts
+    document.cookie = `auth_user=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
+    document.cookie = `jwt=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
+    document.cookie = `refresh_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
 
     // Medaura uses /api/auth/refresh to handle initial session load. 
     // It refreshes token and then checks auth.
     let cancelled = false;
 
     if (localStorage.getItem('explicitlyLoggedOut') === 'true') {
-      clearTokenCookie();
       setLoading(false);
       return;
     }
 
     const refreshPromise = axiosInstance.post('/api/auth/refresh')
-      .then((res) => res.data)
-      .catch(() => null);
+      .then((res) => true)
+      .catch(() => false);
 
-    refreshPromise.then((result) => {
+    refreshPromise.then((isSuccess) => {
       if (!cancelled) {
-        if (result && (result.success || result.status === 'success')) {
-          const data = result.data || result;
-          const token = data.token || data.access_token || data.accessToken || data.access;
-          checkAuth(token);
+        if (isSuccess) {
+          checkAuth();
         } else {
-          clearTokenCookie();
           setLoading(false);
         }
       }
@@ -124,16 +108,12 @@ export function AuthProvider({ children }) {
     localStorage.removeItem('explicitlyLoggedOut');
     setUser(authData);
     setError(null);
-    if (authData?.token) {
-      setTokenCookie(authData.token);
-    }
   }, []);
 
   const clearAuth = useCallback(() => {
     localStorage.setItem('explicitlyLoggedOut', 'true');
     setUser(null);
     setError(null);
-    clearTokenCookie();
   }, []);
 
   const login = useCallback(

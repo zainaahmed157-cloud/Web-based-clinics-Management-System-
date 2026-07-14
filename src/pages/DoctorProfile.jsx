@@ -170,7 +170,10 @@ export default function DoctorProfile() {
         setSelectedDate('');
         setSelectedTime('');
     } catch (err) {
-        setBookingError(isEnglish ? "Failed to book appointment. Please try again." : "فشل حجز الموعد. يرجى المحاولة مرة أخرى.");
+        console.error("Booking Error:", err.response?.data);
+        const backendMsg = err.response?.data?.message || err.response?.data?.error;
+        const defaultMsg = isEnglish ? "Failed to book appointment. Please try again." : "فشل حجز الموعد. يرجى المحاولة مرة أخرى.";
+        setBookingError(backendMsg ? `${defaultMsg} (${backendMsg})` : defaultMsg);
     } finally {
         setBookingLoading(false);
     }
